@@ -1,0 +1,36 @@
+.header {
+  width: 100%;
+  height: 8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: 0.1rem solid #777;
+  background: linear-gradient(0.25turn, #3f87a681, #ebf8e1, #f69c3c9a);
+}
+
+.header h1 {
+  font-size: 3rem;
+}
+
+.navButtons {
+  font-size: 1.5rem;
+  list-style: none;
+  display: flex;
+  gap: 3rem;
+  cursor: pointer;
+  transition: all 300ms;
+}
+
+.navButtons li {
+  transition: all 300ms;
+  padding: 1rem;
+  border-collapse: collapse;
+  margin-bottom: 2px;
+}
+
+.navButtons li:hover {
+  color: rgb(95, 66, 66);
+  outline: 1px solid #3f87a681;
+  border-radius: 1rem;
+  margin-bottom: 2px;
+}
