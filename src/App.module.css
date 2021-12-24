@@ -1,15 +1,49 @@
 .header {
   width: 100%;
-  height: 8rem;
+  height: 7rem;
   display: flex;
+  /* flex-direction: column; */
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
+
   border-bottom: 0.1rem solid #777;
-  background: linear-gradient(0.25turn, #3f87a681, #ebf8e1, #f69c3c9a);
+  background: linear-gradient(
+    0.25turn,
+    rgb(1, 87, 183),
+    rgb(82, 156, 128),
+    rgb(164, 224, 72)
+  );
 }
 
-.header h1 {
-  font-size: 3rem;
+.headerLogo {
+  margin-left: 3rem;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 2rem;
+}
+
+.headerLogo img {
+  height: 4rem;
+  border-right: 1px solid rgb(255, 255, 255);
+  padding-right: 2rem;
+}
+
+.headerLogo h1 {
+  font-size: 2.5rem;
+  letter-spacing: 2px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+}
+
+.pfmText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 5rem;
 }
 
 .navButtons {
@@ -18,19 +52,29 @@
   display: flex;
   gap: 3rem;
   cursor: pointer;
-  transition: all 300ms;
+  transition: all 3000ms;
 }
 
 .navButtons li {
+  text-align: center;
+  min-width: 19rem;
+  background-color: #fff;
+  color: #292929;
   transition: all 300ms;
   padding: 1rem;
   border-collapse: collapse;
   margin-bottom: 2px;
+  border-radius: 1rem;
 }
 
 .navButtons li:hover {
-  color: rgb(95, 66, 66);
-  outline: 1px solid #3f87a681;
+  background-image: linear-gradient(256deg, #1e95d6, #006cb7);
+  color: #fff;
+
   border-radius: 1rem;
   margin-bottom: 2px;
+}
+
+.buttons {
+  margin-right: 3rem;
 }

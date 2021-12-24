@@ -7,7 +7,8 @@ const CardChart = () => {
   const [customerNumber, setCustomerNumber] = useState("");
   const [showData, setShowData] = useState(false);
 
-  const customerNumberButtonHandler = () => {
+  const customerNumberButtonHandler = (e) => {
+    e.preventDefault();
     setShowData(true);
   };
 
@@ -4369,44 +4370,50 @@ const CardChart = () => {
 
   const cardDailyAmount = cardDaily.map(
     (item) =>
-      item.customer_no.includes(customerNumber) &&
+      item.customer_no === customerNumber &&
       customerNumber.length > 0 &&
       item.amount
   );
 
   const cardWeeklyAmount = cardWeekly.map(
     (item) =>
-      item.customer_no.includes(customerNumber) &&
+      item.customer_no === customerNumber &&
       customerNumber.length > 0 &&
       item.amount
   );
 
   const cardMonthlyAmount = cardMonthly.map(
     (item) =>
-      item.customer_no.includes(customerNumber) &&
+      item.customer_no === customerNumber &&
       customerNumber.length > 0 &&
       item.amount
   );
 
   const cardNumbers = cardDaily.map(
     (item) =>
-      item.customer_no.includes(customerNumber) &&
+      item.customer_no === customerNumber &&
       customerNumber.length > 0 &&
       item.card_no
   );
 
-  const filteredItems = cardRawData.filter(
-    (item) =>
-      item.customer_no.includes(customerNumber) &&
-      customerNumber.length > 0 &&
-      filterCard.length > 0 &&
-      item.card_no.includes(filterCard)
-  );
+  const sortedCardRawData = cardRawData
+    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+    .reverse();
+
+  // const filteredItems = cardRawData.filter(
+  //   (item) =>
+  //     item.customer_no.includes(customerNumber) &&
+  //     customerNumber.length > 0 &&
+  //     filterCard.length > 0 &&
+  //     item.card_no.includes(filterCard)
+  // );
 
   return (
     <div className={classes.container}>
-      <h5>Kart Bazında Harcamalar</h5>
-      <div className={classes.customerNumberInput}>
+      <form
+        onSubmit={customerNumberButtonHandler}
+        className={classes.customerNumberInput}
+      >
         <input
           type="number"
           placeholder="Müşteri numarası"
@@ -4415,13 +4422,74 @@ const CardChart = () => {
           required
           disabled={showData}
         />
-        <button type="button" onClick={customerNumberButtonHandler}>
-          Bilgileri getir
-        </button>
-        <button type="button" onClick={clearHandler}>
-          Temizle
-        </button>
-      </div>
+        {!showData && (
+          <button type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="#000000"
+              viewBox="0 0 256 256"
+            >
+              <rect width="256" height="256" fill="none"></rect>
+              <circle
+                cx="116"
+                cy="116"
+                r="84"
+                fill="none"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></circle>
+              <line
+                x1="175.4"
+                y1="175.4"
+                x2="224"
+                y2="224"
+                fill="none"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+            </svg>
+          </button>
+        )}
+        {showData && (
+          <button type="button" onClick={clearHandler}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="#000000"
+              viewBox="0 0 256 256"
+            >
+              <rect width="256" height="256" fill="none"></rect>
+              <line
+                x1="200"
+                y1="56"
+                x2="56"
+                y2="200"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+              <line
+                x1="200"
+                y1="200"
+                x2="56"
+                y2="56"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+            </svg>
+          </button>
+        )}
+      </form>
 
       {cardNumbers[0] && showData && (
         <div className={classes.tableContainer}>
@@ -4474,69 +4542,81 @@ const CardChart = () => {
               return <option value={item}>{item}</option>;
             })}
           </select>
-          <div className={classes.transactionTable}>
-            <table className={classes.transactionTables}>
-              <thead>
-                <th>Kart numarası</th>
-                <th>İşlem tutarı</th>
-                <th>İşlem açıklaması</th>
-                <th>İşlem tarihi</th>
-              </thead>
-              <tbody>
-                <td>
+          {filterCard && (
+            <div className={classes.transactionTable}>
+              <table className={classes.transactionTables}>
+                <thead>
+                  <th>Kart numarası</th>
+                  <th>İşlem tutarı</th>
+                  <th>İşlem kategorisi</th>
+                  {/* <th>İşlem açıklaması</th> */}
+                  <th>İşlem tarihi</th>
+                </thead>
+                <tbody>
+                  <td>
+                    <tr>
+                      {sortedCardRawData.map((card) => {
+                        if (card.card_no === filterCard) {
+                          return <tr>{card.card_no}</tr>;
+                        }
+                      })}
+                    </tr>
+                  </td>
+                  <td>
+                    <tr>
+                      {sortedCardRawData.map((card) => {
+                        if (card.card_no === filterCard) {
+                          return <tr>{card.amount}</tr>;
+                        }
+                      })}
+                    </tr>
+                  </td>
+                  <td>
+                    <tr>
+                      {sortedCardRawData.map((card) => {
+                        if (card.card_no === filterCard) {
+                          return <tr>{card.category}</tr>;
+                        }
+                      })}
+                    </tr>
+                  </td>
+                  {/* <td>
                   <tr>
-                    {cardRawData.map((card) => {
-                      if (card.card_no === filterCard) {
-                        return <tr>{card.card_no}</tr>;
-                      }
-                    })}
-                  </tr>
-                </td>
-                <td>
-                  <tr>
-                    {cardRawData.map((card) => {
-                      if (card.card_no === filterCard) {
-                        return <tr>{card.amount}</tr>;
-                      }
-                    })}
-                  </tr>
-                </td>
-                <td>
-                  <tr>
-                    {cardRawData.map((card) => {
+                    {sortedCardRawData.map((card) => {
                       if (card.card_no === filterCard) {
                         return <tr>{card.trx_desc}</tr>;
                       }
                     })}
                   </tr>
-                </td>
-                <td>
-                  <tr>
-                    {cardRawData.map((card) => {
-                      if (card.card_no === filterCard) {
-                        const day = card.timestamp
-                          .toString()
-                          .split("")
-                          .slice(6, 8)
-                          .join("");
-                        const month = card.timestamp
-                          .toString()
-                          .split("")
-                          .slice(4, 6)
-                          .join("");
-                        const year = card.timestamp
-                          .toString()
-                          .split("")
-                          .slice(0, 4)
-                          .join("");
-                        return <tr>{`${day}/${month}/${year}`}</tr>;
-                      }
-                    })}
-                  </tr>
-                </td>
-              </tbody>
-            </table>
-          </div>
+                </td> */}
+                  <td>
+                    <tr>
+                      {sortedCardRawData.map((card) => {
+                        if (card.card_no === filterCard) {
+                          const day = card.timestamp
+                            .toString()
+                            .split("")
+                            .slice(6, 8)
+                            .join("");
+                          const month = card.timestamp
+                            .toString()
+                            .split("")
+                            .slice(4, 6)
+                            .join("");
+                          const year = card.timestamp
+                            .toString()
+                            .split("")
+                            .slice(0, 4)
+                            .join("");
+                          return <tr>{`${day}/${month}/${year}`}</tr>;
+                        }
+                      })}
+                    </tr>
+                  </td>
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
     </div>

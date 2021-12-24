@@ -4,6 +4,7 @@ import TotalCardChart from "./components/TotalCardChart";
 import classes from "../src/App.module.css";
 import CardChart from "./components/CardChart";
 import AccChart from "./components/AccChart";
+import logo from "../src/fibabanka-logo.png";
 
 function App() {
   const [showTotalCard, setShowTotalCard] = useState(true);
@@ -43,29 +44,34 @@ function App() {
   return (
     <div className="App">
       <nav className={classes.header}>
-        <div className={classes.logo}>
-          <h1>Kredi Kartları ve Hesap Hareketleri</h1>
+        <div className={classes.headerLogo}>
+          <img src={logo} alt="logo of fibabanka" className={classes.logo} />
+          <div className={classes.pfmText}>
+            <h1>PFM</h1>
+          </div>
         </div>
-        <ul className={classes.navButtons}>
-          <li
-            onClick={showTotalCardHandler}
-            className={`${totalCardActive ? "active" : ""}`}
-          >
-            Kart Toplam Harcamalar
-          </li>
-          <li
-            onClick={showCardHandler}
-            className={showCardActive ? "active" : ""}
-          >
-            Kart Bazında Harcamalar
-          </li>
-          <li
-            onClick={showAccHandler}
-            className={showAccActive ? "active" : ""}
-          >
-            Hesap Hareketleri
-          </li>
-        </ul>
+        <div className={classes.buttons}>
+          <ul className={classes.navButtons}>
+            <li
+              onClick={showTotalCardHandler}
+              className={`${totalCardActive ? "active" : ""}`}
+            >
+              Kart Toplam Harcamalar
+            </li>
+            <li
+              onClick={showCardHandler}
+              className={showCardActive ? "active" : ""}
+            >
+              Kart Bazında Harcamalar
+            </li>
+            <li
+              onClick={showAccHandler}
+              className={showAccActive ? "active" : ""}
+            >
+              Hesap Hareketleri
+            </li>
+          </ul>
+        </div>
       </nav>
       {showTotalCard && !showCard && !showAcc && <TotalCardChart />}
       {!showTotalCard && showCard && <CardChart />}

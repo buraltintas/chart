@@ -10,7 +10,20 @@ const NewChart = () => {
   const [clickedCardNumber, setClickedCardNumber] = useState("");
   const [showClickedCardChart, setShowClickedCardChart] = useState(false);
 
-  const customerNumberButtonHandler = () => {
+  let period = "";
+
+  if (category === "daily") {
+    period = "günlük";
+  }
+  if (category === "weekly") {
+    period = "haftalık";
+  }
+  if (category === "monthly") {
+    period = "aylık";
+  }
+
+  const customerNumberButtonHandler = (e) => {
+    e.preventDefault();
     setShowData(true);
   };
 
@@ -4325,7 +4338,7 @@ const NewChart = () => {
   cardNumbersDaily.push(
     cardDaily.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.card_no
     )
@@ -4335,7 +4348,7 @@ const NewChart = () => {
   amountsDaily.push(
     cardDaily.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -4383,7 +4396,7 @@ const NewChart = () => {
   cardNumbersWeekly.push(
     cardWeekly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.card_no
     )
@@ -4393,7 +4406,7 @@ const NewChart = () => {
   amountsWeekly.push(
     cardWeekly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -4441,7 +4454,7 @@ const NewChart = () => {
   cardNumbersMonthly.push(
     cardMonthly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.card_no
     )
@@ -4451,7 +4464,7 @@ const NewChart = () => {
   amountsMonthly.push(
     cardMonthly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -4566,7 +4579,7 @@ const NewChart = () => {
   categoryAmountsDaily.push(
     categoryDaily.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -4577,7 +4590,7 @@ const NewChart = () => {
   categoryNameDaily.push(
     categoryDaily.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.category
     )
@@ -4801,7 +4814,7 @@ const NewChart = () => {
   categoryAmountsWeekly.push(
     categoryWeekly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -4812,7 +4825,7 @@ const NewChart = () => {
   categoryNameWeekly.push(
     categoryWeekly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.category
     )
@@ -5046,7 +5059,7 @@ const NewChart = () => {
   categoryAmountsMonthly.push(
     categoryMonthly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         Math.abs(item.amount)
     )
@@ -5057,7 +5070,7 @@ const NewChart = () => {
   categoryNameMonthly.push(
     categoryMonthly.map(
       (item) =>
-        item.customer_no.includes(customerNumber) &&
+        item.customer_no === customerNumber &&
         customerNumber.length > 0 &&
         item.category
     )
@@ -5105,8 +5118,6 @@ const NewChart = () => {
       clickedCardCategoryName.push(item.category)
   );
 
-  console.log(clickedCardCategoryAmounts);
-
   const cardExpense = {
     series: categoryAmounts[0],
     options: {
@@ -5147,7 +5158,7 @@ const NewChart = () => {
       },
     },
   };
-  console.log(clickedCardNumber);
+
   const gradient = {
     options: {
       chart: {
@@ -5242,8 +5253,11 @@ const NewChart = () => {
 
   return (
     <div className={classes.container}>
-      <h5>Kart Toplam Harcamalar</h5>
-      <div className={classes.customerNumberInput}>
+      <form
+        onSubmit={customerNumberButtonHandler}
+        className={classes.customerNumberInput}
+      >
+        {/* <h5>Kart Toplam Harcamalar</h5> */}
         <input
           type="number"
           placeholder="Müşteri numarası"
@@ -5252,25 +5266,91 @@ const NewChart = () => {
           required
           disabled={showData}
         />
-        <button type="button" onClick={customerNumberButtonHandler}>
-          Bilgileri getir
-        </button>
-        <button type="button" onClick={clearHandler}>
-          Temizle
-        </button>
-      </div>
+        {!showData && (
+          <button type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="#000000"
+              viewBox="0 0 256 256"
+            >
+              <rect width="256" height="256" fill="none"></rect>
+              <circle
+                cx="116"
+                cy="116"
+                r="84"
+                fill="none"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></circle>
+              <line
+                x1="175.4"
+                y1="175.4"
+                x2="224"
+                y2="224"
+                fill="none"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+            </svg>
+          </button>
+        )}
+        {showData && (
+          <button type="button" onClick={clearHandler}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="#000000"
+              viewBox="0 0 256 256"
+            >
+              <rect width="256" height="256" fill="none"></rect>
+              <line
+                x1="200"
+                y1="56"
+                x2="56"
+                y2="200"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+              <line
+                x1="200"
+                y1="200"
+                x2="56"
+                y2="56"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+            </svg>
+          </button>
+        )}
+      </form>
 
       {cardNumbersDaily[0][0] && showData && (
         <div className={classes.totalExpense}>
           <div className={classes.selectPeriod}>
-            <form onSubmit={categoryHandler} className={classes.form}>
-              <select name="period" id="period" ref={categoryRef}>
+            <div className={classes.form}>
+              <select
+                name="period"
+                id="period"
+                ref={categoryRef}
+                onChange={categoryHandler}
+              >
                 <option value="daily">Günlük harcamalar</option>
                 <option value="weekly">Haftalık harcamalar</option>
                 <option value="monthly">Aylık harcamalar</option>
               </select>
-              <button>Getir</button>
-            </form>
+              {/* <button>Getir</button> */}
+            </div>
           </div>
 
           <ReactApexChart
@@ -5288,10 +5368,10 @@ const NewChart = () => {
         <h4>Müşteri numarası bulunamadı.</h4>
       )}
 
-      {showClickedCardChart && showData && (
+      {cardNumbersDaily[0][0] && showClickedCardChart && showData && (
         <div className={classes.clickedCardChart}>
           <h4 className={classes.allCardsText}>
-            {clickedCardNumber} nolu kart bazında harcama kategorileri
+            {clickedCardNumber} nolu kart bazında tüm harcama kategorileri
           </h4>
           <ReactApexChart
             className={classes.cardExpense}
@@ -5301,8 +5381,40 @@ const NewChart = () => {
             width={900}
             height={400}
           />
-          <button type="button" onClick={closeClickedCardChart}>
-            ⬆ Kapat
+          <button
+            type="button"
+            onClick={closeClickedCardChart}
+            className={classes.closeButton}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              fill="#000000"
+              viewBox="0 0 256 256"
+            >
+              <rect width="256" height="256" fill="none"></rect>
+              <line
+                x1="200"
+                y1="56"
+                x2="56"
+                y2="200"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+              <line
+                x1="200"
+                y1="200"
+                x2="56"
+                y2="56"
+                stroke="#000000"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="16"
+              ></line>
+            </svg>
           </button>
         </div>
       )}
@@ -5311,7 +5423,7 @@ const NewChart = () => {
         <div className={classes.cardExpenses}>
           <div className={classes.expense}>
             <h4 className={classes.allCardsText}>
-              Tüm kartlar için harcama kategorileri
+              Tüm kartlar için {period} harcama kategorileri
             </h4>
             <ReactApexChart
               className={classes.cardExpense}
