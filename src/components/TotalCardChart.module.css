@@ -1,3 +1,8 @@
+.container {
+  height: 100vh;
+  border-bottom: 1px solid #ccc;
+}
+
 .totalExpense {
   margin: 0 auto;
   margin-top: 1rem;

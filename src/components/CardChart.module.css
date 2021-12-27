@@ -1,3 +1,10 @@
+.container {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5rem;
+  padding-top: 7rem;
+  min-height: 80rem;
+}
+
 .customerNumberInput {
   margin: 2rem;
   width: 20%;

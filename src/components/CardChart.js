@@ -2,25 +2,10 @@ import { useState } from "react/cjs/react.development";
 import ReactApexChart from "react-apexcharts";
 import classes from "./CardChart.module.css";
 
-const CardChart = () => {
+const CardChart = (props) => {
   const [filterCard, setFilterCard] = useState("");
-  const [customerNumber, setCustomerNumber] = useState("");
-  const [showData, setShowData] = useState(false);
 
-  const customerNumberButtonHandler = (e) => {
-    e.preventDefault();
-    setShowData(true);
-  };
-
-  const customerNumberHandler = (e) => {
-    setCustomerNumber(e.target.value);
-  };
-
-  const clearHandler = () => {
-    setCustomerNumber("");
-    setShowData(false);
-    setFilterCard("");
-  };
+  const customerNumber = props.customerNumber;
 
   const filterCardHandler = (e) => {
     setFilterCard(e.target.value);
@@ -4410,88 +4395,7 @@ const CardChart = () => {
 
   return (
     <div className={classes.container}>
-      <form
-        onSubmit={customerNumberButtonHandler}
-        className={classes.customerNumberInput}
-      >
-        <input
-          type="number"
-          placeholder="Müşteri numarası"
-          value={customerNumber}
-          onChange={customerNumberHandler}
-          required
-          disabled={showData}
-        />
-        {!showData && (
-          <button type="submit">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <circle
-                cx="116"
-                cy="116"
-                r="84"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></circle>
-              <line
-                x1="175.4"
-                y1="175.4"
-                x2="224"
-                y2="224"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-        {showData && (
-          <button type="button" onClick={clearHandler}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <line
-                x1="200"
-                y1="56"
-                x2="56"
-                y2="200"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-              <line
-                x1="200"
-                y1="200"
-                x2="56"
-                y2="56"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-      </form>
-
-      {cardNumbers[0] && showData && (
+      {cardNumbers[0] && (
         <div className={classes.tableContainer}>
           <table className={classes.table}>
             <thead>
@@ -4529,11 +4433,11 @@ const CardChart = () => {
           </table>
         </div>
       )}
-      {cardNumbers[0] === false && showData && (
+      {/* {cardNumbers[0] === false && (
         <h4>Müşteri numarası bulunamadı.</h4>
-      )}
+      )} */}
 
-      {cardNumbers[0] && showData && (
+      {cardNumbers[0] && (
         <div className={classes.select}>
           <h3>Kart hareketlerini görmek için: </h3>
           <select name="card" id="" onChange={filterCardHandler}>

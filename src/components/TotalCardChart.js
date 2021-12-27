@@ -2,15 +2,15 @@ import ReactApexChart from "react-apexcharts";
 import classes from "./TotalCardChart.module.css";
 import { useRef, useState } from "react";
 
-const NewChart = () => {
+const NewChart = (props) => {
   const categoryRef = useRef("");
   const [category, setCategory] = useState("daily");
-  const [customerNumber, setCustomerNumber] = useState("");
-  const [showData, setShowData] = useState(false);
   const [clickedCardNumber, setClickedCardNumber] = useState("");
   const [showClickedCardChart, setShowClickedCardChart] = useState(false);
 
   let period = "";
+
+  const customerNumber = props.customerNumber;
 
   if (category === "daily") {
     period = "günlük";
@@ -21,20 +21,6 @@ const NewChart = () => {
   if (category === "monthly") {
     period = "aylık";
   }
-
-  const customerNumberButtonHandler = (e) => {
-    e.preventDefault();
-    setShowData(true);
-  };
-
-  const customerNumberHandler = (e) => {
-    setCustomerNumber(e.target.value);
-  };
-
-  const clearHandler = () => {
-    setCustomerNumber("");
-    setShowData(false);
-  };
 
   const categoryHandler = (e) => {
     e.preventDefault();
@@ -5253,122 +5239,37 @@ const NewChart = () => {
 
   return (
     <div className={classes.container}>
-      <form
-        onSubmit={customerNumberButtonHandler}
-        className={classes.customerNumberInput}
-      >
-        {/* <h5>Kart Toplam Harcamalar</h5> */}
-        <input
-          type="number"
-          placeholder="Müşteri numarası"
-          value={customerNumber}
-          onChange={customerNumberHandler}
-          required
-          disabled={showData}
-        />
-        {!showData && (
-          <button type="submit">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
+      <div className={classes.totalExpense}>
+        <div className={classes.selectPeriod}>
+          <div className={classes.form}>
+            <select
+              name="period"
+              id="period"
+              ref={categoryRef}
+              onChange={categoryHandler}
             >
-              <rect width="256" height="256" fill="none"></rect>
-              <circle
-                cx="116"
-                cy="116"
-                r="84"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></circle>
-              <line
-                x1="175.4"
-                y1="175.4"
-                x2="224"
-                y2="224"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-        {showData && (
-          <button type="button" onClick={clearHandler}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <line
-                x1="200"
-                y1="56"
-                x2="56"
-                y2="200"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-              <line
-                x1="200"
-                y1="200"
-                x2="56"
-                y2="56"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-      </form>
-
-      {cardNumbersDaily[0][0] && showData && (
-        <div className={classes.totalExpense}>
-          <div className={classes.selectPeriod}>
-            <div className={classes.form}>
-              <select
-                name="period"
-                id="period"
-                ref={categoryRef}
-                onChange={categoryHandler}
-              >
-                <option value="daily">Günlük harcamalar</option>
-                <option value="weekly">Haftalık harcamalar</option>
-                <option value="monthly">Aylık harcamalar</option>
-              </select>
-              {/* <button>Getir</button> */}
-            </div>
+              <option value="daily">Günlük harcamalar</option>
+              <option value="weekly">Haftalık harcamalar</option>
+              <option value="monthly">Aylık harcamalar</option>
+            </select>
           </div>
-
-          <ReactApexChart
-            options={gradient.options}
-            series={percentageAmounts}
-            type="donut"
-            height={400}
-          />
-          <h3>Toplam Harcama</h3>
-          <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
         </div>
-      )}
 
-      {cardNumbersDaily[0][0] === false && showData && (
+        <ReactApexChart
+          options={gradient.options}
+          series={percentageAmounts}
+          type="donut"
+          height={400}
+        />
+        <h3>Toplam Harcama</h3>
+        <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
+      </div>
+
+      {/* {cardNumbersDaily[0][0] === false && showData && (
         <h4>Müşteri numarası bulunamadı.</h4>
-      )}
+      )} */}
 
-      {cardNumbersDaily[0][0] && showClickedCardChart && showData && (
+      {cardNumbersDaily[0][0] && showClickedCardChart && (
         <div className={classes.clickedCardChart}>
           <h4 className={classes.allCardsText}>
             {clickedCardNumber} nolu kart bazında tüm harcama kategorileri
@@ -5419,7 +5320,7 @@ const NewChart = () => {
         </div>
       )}
 
-      {!showClickedCardChart && cardNumbersDaily[0][0] && showData && (
+      {!showClickedCardChart && cardNumbersDaily[0][0] && (
         <div className={classes.cardExpenses}>
           <div className={classes.expense}>
             <h4 className={classes.allCardsText}>

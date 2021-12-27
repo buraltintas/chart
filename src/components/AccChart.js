@@ -2,11 +2,11 @@ import classes from "./AccChart.module.css";
 import ReactApexChart from "react-apexcharts";
 import { useState, useRef } from "react";
 
-const AccChart = () => {
-  const [customerNumber, setCustomerNumber] = useState("");
-  const [showData, setShowData] = useState(false);
+const AccChart = (props) => {
   const [category, setCategory] = useState("daily");
   const categoryRef = useRef("");
+
+  const customerNumber = props.customerNumber;
 
   let period = "";
 
@@ -23,20 +23,6 @@ const AccChart = () => {
   const categoryHandler = (e) => {
     e.preventDefault();
     setCategory(categoryRef.current.value);
-  };
-
-  const customerNumberButtonHandler = (e) => {
-    e.preventDefault();
-    setShowData(true);
-  };
-
-  const customerNumberHandler = (e) => {
-    setCustomerNumber(e.target.value);
-  };
-
-  const clearHandler = () => {
-    setCustomerNumber("");
-    setShowData(false);
   };
 
   const categoryDaily = [
@@ -3703,91 +3689,8 @@ const AccChart = () => {
 
   return (
     <div className={classes.container}>
-      <form
-        onSubmit={customerNumberButtonHandler}
-        className={classes.customerNumberInput}
-      >
-        {/* <h5>Kart Toplam Harcamalar</h5> */}
-        <input
-          type="number"
-          placeholder="Müşteri numarası"
-          value={customerNumber}
-          onChange={customerNumberHandler}
-          required
-          disabled={showData}
-        />
-        {!showData && (
-          <button type="submit">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <circle
-                cx="116"
-                cy="116"
-                r="84"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></circle>
-              <line
-                x1="175.4"
-                y1="175.4"
-                x2="224"
-                y2="224"
-                fill="none"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-        {showData && (
-          <button type="button" onClick={clearHandler}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <line
-                x1="200"
-                y1="56"
-                x2="56"
-                y2="200"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-              <line
-                x1="200"
-                y1="200"
-                x2="56"
-                y2="56"
-                stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
-              ></line>
-            </svg>
-          </button>
-        )}
-      </form>
-      {!positiveCategoryDaily.length && showData && (
-        <h4>Müşteri numarası bulunamadı.</h4>
-      )}
-      {positiveCategoryDaily.length > 0 && showData && (
+      {!positiveCategoryDaily.length && <h4>Müşteri numarası bulunamadı.</h4>}
+      {positiveCategoryDaily.length > 0 && (
         <div className={classes.totalExpense}>
           <ReactApexChart
             options={bar.options}
