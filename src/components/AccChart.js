@@ -347,10 +347,10 @@ const AccChart = (props) => {
     sumNegative = sumNegativeAmountsDaily;
   }
 
-  if (category === "weekly") {
-    sumPositive = sumPositiveAmountsWeekly;
-    sumNegative = sumNegativeAmountsWeekly;
-  }
+  // if (category === "weekly") {
+  //   sumPositive = sumPositiveAmountsWeekly;
+  //   sumNegative = sumNegativeAmountsWeekly;
+  // }
 
   if (category === "monthly") {
     sumPositive = sumPositiveAmountsMonthly;
@@ -3683,8 +3683,6 @@ const AccChart = (props) => {
     const day = item.max_trx_date.toString().split("").slice(6, 8).join("");
     const month = item.max_trx_date.toString().split("").slice(4, 6).join("");
     const year = item.max_trx_date.toString().split("").slice(0, 4).join("");
-
-    console.log(`${day}/${month}/${year}`);
   });
 
   return (
@@ -3707,7 +3705,7 @@ const AccChart = (props) => {
                 onChange={categoryHandler}
               >
                 <option value="daily">Günlük hareketler</option>
-                <option value="weekly">Haftalık hareketler</option>
+
                 <option value="monthly">Aylık hareketler</option>
               </select>
               {/* <button>Getir</button> */}

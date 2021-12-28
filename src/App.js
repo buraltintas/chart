@@ -129,9 +129,9 @@ function App() {
                 r="84"
                 fill="none"
                 stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="16"
               ></circle>
               <line
                 x1="175.4"
@@ -140,9 +140,9 @@ function App() {
                 y2="224"
                 fill="none"
                 stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="16"
               ></line>
             </svg>
           </button>
@@ -163,9 +163,9 @@ function App() {
                 x2="56"
                 y2="200"
                 stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="16"
               ></line>
               <line
                 x1="200"
@@ -173,9 +173,9 @@ function App() {
                 x2="56"
                 y2="56"
                 stroke="#000000"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="16"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="16"
               ></line>
             </svg>
           </button>
