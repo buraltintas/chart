@@ -53,7 +53,9 @@ const NewChart = (props) => {
   fetchCardRawData(customerNumber, today);
 
   function fetchCardDaily(customerNumber, today) {
-    fetch(`http://127.0.0.1:8000/transaction/credit/${customerNumber}/${today}`)
+    fetch(
+      `http://127.0.0.1:8000/customer/card/daily/${customerNumber}/${today}`
+    )
       .then((response) => {
         return response.json();
       })
@@ -88,7 +90,7 @@ const NewChart = (props) => {
 
   function fetchCardMonthly(customerNumber, monthlyPeriod) {
     fetch(
-      `http://127.0.0.1:8000/transaction/credit/${customerNumber}/${monthlyPeriod}`
+      `http://127.0.0.1:8000/customer/card/monthly/${customerNumber}/${monthlyPeriod}`
     )
       .then((response) => {
         return response.json();
@@ -123,7 +125,9 @@ const NewChart = (props) => {
   );
 
   function fetchCategoryDaily(customerNumber, today) {
-    fetch(`http://127.0.0.1:8000/transaction/credit/${customerNumber}/${today}`)
+    fetch(
+      `http://127.0.0.1:8000/customer/category/daily/${customerNumber}/${today}`
+    )
       .then((response) => {
         return response.json();
       })
@@ -148,7 +152,7 @@ const NewChart = (props) => {
 
   function fetchCategoryMonthly(customerNumber, monthlyPeriod) {
     fetch(
-      `http://127.0.0.1:8000/transaction/credit/${customerNumber}/${monthlyPeriod}`
+      `http://127.0.0.1:8000/customer/category/monthly/${customerNumber}/${monthlyPeriod}`
     )
       .then((response) => {
         return response.json();
@@ -182,14 +186,6 @@ const NewChart = (props) => {
     categoryName = categoryNameDaily;
     categoryAmounts = categoryAmountsDaily;
   }
-
-  // if (category === "weekly") {
-  //   percentageAmounts = percentageAmountsWeekly;
-  //   sumAmounts = sumAmountsWeekly;
-  //   cardNumbers = cardNumbersWeekly;
-  //   categoryName = categoryNameWeekly;
-  //   categoryAmounts = categoryAmountsWeekly;
-  // }
 
   if (category === "monthly") {
     percentageAmounts = percentageAmountsMonthly;
@@ -375,10 +371,6 @@ const NewChart = (props) => {
         <h3>Toplam Harcama</h3>
         <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
       </div>
-
-      {/* {cardNumbersDaily[0][0] === false && showData && (
-        <h4>Müşteri numarası bulunamadı.</h4>
-      )} */}
 
       {cardNumbersDaily[0][0] && showClickedCardChart && (
         <div className={classes.clickedCardChart}>

@@ -7,9 +7,9 @@ import AccChart from "./components/AccChart";
 import logo from "../src/fibabanka-logo.png";
 
 function App() {
-  const [showTotalCard, setShowTotalCard] = useState(true);
-  const [showCard, setShowCard] = useState(false);
-  const [showAcc, setShowAcc] = useState(false);
+  // const [showTotalCard, setShowTotalCard] = useState(true);
+  // const [showCard, setShowCard] = useState(false);
+  // const [showAcc, setShowAcc] = useState(false);
   const [showCardActive, setShowCardActive] = useState(false);
   const [totalCardActive, setTotalCardActive] = useState(true);
   const [showAccActive, setShowAccActive] = useState(false);
@@ -22,9 +22,7 @@ function App() {
 
   const showTotalCardHandler = () => {
     console.log(totalCardChart.current);
-    // totalCardChart.current.scrollIntoView({
-    //   behavior: "smooth",
-    // });
+
     window.scrollTo({
       top: 0,
       left: 0,
@@ -104,7 +102,6 @@ function App() {
         onSubmit={customerNumberButtonHandler}
         className={classes.customerNumberInput}
       >
-        {/* <h5>Kart Toplam Harcamalar</h5> */}
         <input
           type="number"
           placeholder="Müşteri numarası"

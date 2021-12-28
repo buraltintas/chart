@@ -33,7 +33,9 @@ const CardChart = (props) => {
   fetchCardRawData(customerNumber, today);
 
   function fetchCardDaily(customerNumber, today) {
-    fetch(`http://127.0.0.1:8000/transaction/credit/${customerNumber}/${today}`)
+    fetch(
+      `http://127.0.0.1:8000/customer/card/daily/${customerNumber}/${today}`
+    )
       .then((response) => {
         return response.json();
       })
@@ -47,7 +49,7 @@ const CardChart = (props) => {
 
   function fetchCardMonthly(customerNumber, monthlyPeriod) {
     fetch(
-      `http://127.0.0.1:8000/transaction/credit/${customerNumber}/${monthlyPeriod}`
+      `http://127.0.0.1:8000/customer/card/monthly/${customerNumber}/${monthlyPeriod}`
     )
       .then((response) => {
         return response.json();
@@ -126,9 +128,6 @@ const CardChart = (props) => {
           </table>
         </div>
       )}
-      {/* {cardNumbers[0] === false && (
-        <h4>Müşteri numarası bulunamadı.</h4>
-      )} */}
 
       {cardNumbers[0] && (
         <div className={classes.select}>
