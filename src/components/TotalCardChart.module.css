@@ -1,15 +1,45 @@
 .container {
   height: 100vh;
   border-bottom: 1px solid #ccc;
+  width: 100%;
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+}
+
+.left {
+  height: 80rem;
+  width: 195rem;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donutChart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .totalExpense {
-  margin: 0 auto;
+  margin-bottom: -12rem;
   margin-top: 1rem;
   width: 80%;
   display: flex;
   flex-direction: column;
   text-align: center;
+}
+
+.totalExpenseText {
+  margin-top: -25rem;
+
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .customerNumberInput {
@@ -31,10 +61,6 @@ input[type="number"]::-webkit-outer-spin-button {
 input {
   height: 2rem;
   padding: 0.5rem;
-}
-
-h3 {
-  margin-top: -25rem;
 }
 
 h5 {
@@ -64,7 +90,7 @@ h5 {
 
 .cardExpenses {
   margin: 0 auto;
-  margin-top: 5rem;
+
   width: 100%;
 
   display: flex;
@@ -74,7 +100,7 @@ h5 {
 
 .cardExpense {
   margin: 0 auto;
-  width: 80%;
+  width: 100%rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -102,6 +128,14 @@ h5 {
 select {
   border-radius: 1rem;
   padding: 0.5rem;
+}
+
+.select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1rem;
 }
 
 button {
@@ -135,17 +169,27 @@ button:hover {
 }
 
 .allCardsText {
+  font-size: 2rem;
+
   color: #777;
 }
 
 .clickedCardChart {
+  min-height: 50rem;
   margin: 0 auto;
   margin-top: 5rem;
-  width: 80%;
+  padding-left: 4rem;
+  padding-right: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   border: 1px solid #ccc;
+}
+
+.clickedArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .clickedCardChart button {
@@ -156,4 +200,21 @@ button:hover {
   padding-bottom: 5px;
   margin-top: 1rem;
   width: 3.4rem !important;
+}
+
+.transactionTable {
+  margin: 0 auto;
+  font-size: 1.5rem;
+  width: 100%;
+  margin-top: 3rem;
+  margin-bottom: 5rem;
+  display: flex;
+  align-items: center;
+}
+
+.transactionTables {
+  width: 90rem;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  font-size: 1.5rem;
 }

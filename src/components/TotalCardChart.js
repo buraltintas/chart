@@ -1,17 +1,15 @@
 import ReactApexChart from "react-apexcharts";
 import classes from "./TotalCardChart.module.css";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const NewChart = (props) => {
   const categoryRef = useRef("");
   const [category, setCategory] = useState("daily");
   const [clickedCardNumber, setClickedCardNumber] = useState("");
   const [showClickedCardChart, setShowClickedCardChart] = useState(false);
-  const [cardRawData, setCardRawData] = useState("");
-  const [cardDaily, setCardDaily] = useState("");
-  const [cardMonthly, setCardMonthly] = useState("");
-  const [categoryDaily, setCategoryDaily] = useState("");
-  const [categoryMonthly, setCategoryMonthly] = useState("");
+  const [filterCard, setFilterCard] = useState("");
+  const [clickedCardDaily, setclickedCardDaily] = useState([]);
+  const [clickedCardMonthly, setclickedCardMonthly] = useState([]);
 
   let period = "";
 
@@ -25,6 +23,13 @@ const NewChart = (props) => {
     period = "aylık";
   }
 
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth();
+  const day = new Date().getDate();
+  const today = `${year}${month + 1}${day}`;
+
+  const monthlyPeriod = `${year}${month + 1}`;
+
   const categoryHandler = (e) => {
     e.preventDefault();
     setCategory(categoryRef.current.value);
@@ -34,36 +39,8 @@ const NewChart = (props) => {
     setShowClickedCardChart(false);
   };
 
-  const year = new Date().getFullYear();
-  const month = new Date().getMonth();
-  const day = new Date().getDate();
-  const today = `${year}${month + 1}${day}`;
-
-  function fetchCardRawData(customerNumber, today) {
-    fetch(
-      `http://127.0.0.1:8000/transaction/credit/${customerNumber}/20211118113800/${today}000000`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setCardRawData(data);
-      });
-  }
-  fetchCardRawData(customerNumber, today);
-
-  function fetchCardDaily(customerNumber, today) {
-    fetch(
-      `http://127.0.0.1:8000/customer/card/daily/${customerNumber}/${today}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setCardDaily(data);
-      });
-  }
-  fetchCardDaily(customerNumber, today);
+  const cardRawData = props.cardRawData;
+  const cardDaily = props.cardDaily;
 
   let cardNumbersDaily = [];
 
@@ -86,20 +63,7 @@ const NewChart = (props) => {
     Math.round((item * 100) / sumAmountsDaily)
   );
 
-  const monthlyPeriod = `${year}${month + 1}`;
-
-  function fetchCardMonthly(customerNumber, monthlyPeriod) {
-    fetch(
-      `http://127.0.0.1:8000/customer/card/monthly/${customerNumber}/${monthlyPeriod}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setCardMonthly(data);
-      });
-  }
-  fetchCardMonthly(customerNumber, monthlyPeriod);
+  const cardMonthly = props.cardMonthly;
 
   let cardNumbersMonthly = [];
 
@@ -124,18 +88,7 @@ const NewChart = (props) => {
     (item) => +`${Math.round((item * 100) / sumAmountsMonthly)}`
   );
 
-  function fetchCategoryDaily(customerNumber, today) {
-    fetch(
-      `http://127.0.0.1:8000/customer/category/daily/${customerNumber}/${today}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setCategoryDaily(data);
-      });
-  }
-  fetchCategoryDaily(customerNumber, today);
+  const categoryDaily = props.categoryDaily;
 
   let categoryAmountsDaily = [];
   categoryAmountsDaily.push(
@@ -150,18 +103,7 @@ const NewChart = (props) => {
     categoryDaily.map((item) => customerNumber.length > 0 && item.category)
   );
 
-  function fetchCategoryMonthly(customerNumber, monthlyPeriod) {
-    fetch(
-      `http://127.0.0.1:8000/customer/category/monthly/${customerNumber}/${monthlyPeriod}`
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        setCategoryMonthly(data);
-      });
-  }
-  fetchCategoryMonthly(customerNumber, monthlyPeriod);
+  const categoryMonthly = props.categoryMonthly;
 
   let categoryAmountsMonthly = [];
 
@@ -195,21 +137,22 @@ const NewChart = (props) => {
     categoryAmounts = categoryAmountsMonthly;
   }
 
-  const clickedCardCategoryAmounts = [];
+  const filterCardHandler = (e) => {
+    setFilterCard(e.target.value);
+  };
 
-  cardRawData.filter(
+  const cardNumbersFilter = cardDaily.map(
     (item) =>
-      item.card_no === clickedCardNumber &&
-      clickedCardCategoryAmounts.push(Math.abs(item.amount))
+      item.customer_no === customerNumber &&
+      customerNumber.length > 0 &&
+      item.card_no
   );
 
-  const clickedCardCategoryName = [];
+  const sortedCardRawData = cardRawData
 
-  cardRawData.filter(
-    (item) =>
-      item.card_no === clickedCardNumber &&
-      clickedCardCategoryName.push(item.category)
-  );
+    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+    .reverse()
+    .slice(0, 80);
 
   const cardExpense = {
     series: categoryAmounts[0],
@@ -252,14 +195,17 @@ const NewChart = (props) => {
     },
   };
 
+  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+
   const gradient = {
     options: {
       chart: {
         events: {
           dataPointSelection: function (event, chartContext, config) {
-            // console.log(config.w.config.series[config.dataPointIndex]);
+            console.log(config.w.config.labels[config.dataPointIndex]);
 
             setClickedCardNumber(config.w.config.labels[config.dataPointIndex]);
+
             setShowClickedCardChart(true);
           },
         },
@@ -303,14 +249,90 @@ const NewChart = (props) => {
     },
   };
 
+  useEffect(() => {
+    if (clickedCardNumber > 0) {
+      async function fetchCardDaily(customerNumber, today) {
+        const response = await fetch(
+          `${baseURL}/customer/card/category/daily/${customerNumber}/${clickedCardNumber}/${today}`
+        );
+
+        console.log("cardDaily", response);
+
+        const data = await response.json();
+
+        setclickedCardDaily(data);
+      }
+      async function fetchCardMonthly(customerNumber, monthlyPeriod) {
+        const response = await fetch(
+          `${baseURL}/customer/card/category/monthly/${customerNumber}/${clickedCardNumber}/${monthlyPeriod}`
+        );
+
+        console.log("cardDaily", response);
+
+        const data = await response.json();
+
+        setclickedCardMonthly(data);
+      }
+      fetchCardMonthly(customerNumber, monthlyPeriod);
+      fetchCardDaily(customerNumber, today);
+    }
+  }, [clickedCardNumber]);
+
+  console.log(clickedCardDaily);
+  console.log(clickedCardMonthly);
+
+  const clickedCardCategoryNameDaily = [];
+
+  clickedCardDaily.filter(
+    (item) =>
+      item.card_no === clickedCardNumber &&
+      clickedCardCategoryNameDaily.push(item.category)
+  );
+
+  const clickedCardCategoryAmountsDaily = [];
+
+  clickedCardDaily.filter(
+    (item) =>
+      item.card_no === clickedCardNumber &&
+      clickedCardCategoryAmountsDaily.push(Math.abs(item.amount))
+  );
+
+  const clickedCardCategoryNameMonthly = [];
+
+  clickedCardMonthly.filter(
+    (item) =>
+      item.card_no === clickedCardNumber &&
+      clickedCardCategoryNameMonthly.push(item.category)
+  );
+
+  const clickedCardCategoryAmountsMonthly = [];
+
+  clickedCardMonthly.filter(
+    (item) =>
+      item.card_no === clickedCardNumber &&
+      clickedCardCategoryAmountsMonthly.push(Math.abs(item.amount))
+  );
+
+  let clickedCardCategoryData, clickedCardAmountData;
+
+  if (period === "günlük") {
+    clickedCardCategoryData = clickedCardCategoryNameDaily;
+    clickedCardAmountData = clickedCardCategoryAmountsDaily;
+  }
+
+  if (period === "aylık") {
+    clickedCardCategoryData = clickedCardCategoryNameMonthly;
+    clickedCardAmountData = clickedCardCategoryAmountsMonthly;
+  }
+
   const clickedCardExpense = {
-    series: clickedCardCategoryAmounts,
+    series: clickedCardAmountData,
     options: {
       chart: {
         width: 380,
         type: "polarArea",
       },
-      labels: clickedCardCategoryName,
+      labels: clickedCardCategoryData,
       fill: {
         opacity: 1,
       },
@@ -346,100 +368,210 @@ const NewChart = (props) => {
 
   return (
     <div className={classes.container}>
-      <div className={classes.totalExpense}>
-        <div className={classes.selectPeriod}>
-          <div className={classes.form}>
-            <select
-              name="period"
-              id="period"
-              ref={categoryRef}
-              onChange={categoryHandler}
-            >
-              <option value="daily">Günlük harcamalar</option>
+      <div className={classes.left}>
+        <div className={classes.totalExpense}>
+          <div className={classes.selectPeriod}>
+            <div className={classes.form}>
+              <select
+                name="period"
+                id="period"
+                ref={categoryRef}
+                onChange={categoryHandler}
+              >
+                <option value="daily">Günlük harcamalar</option>
 
-              <option value="monthly">Aylık harcamalar</option>
-            </select>
+                <option value="monthly">Aylık harcamalar</option>
+              </select>
+            </div>
           </div>
-        </div>
-
-        <ReactApexChart
-          options={gradient.options}
-          series={percentageAmounts}
-          type="donut"
-          height={400}
-        />
-        <h3>Toplam Harcama</h3>
-        <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
-      </div>
-
-      {cardNumbersDaily[0][0] && showClickedCardChart && (
-        <div className={classes.clickedCardChart}>
-          <h4 className={classes.allCardsText}>
-            {clickedCardNumber} nolu kart bazında tüm harcama kategorileri
-          </h4>
-          <ReactApexChart
-            className={classes.cardExpense}
-            options={clickedCardExpense.options}
-            series={clickedCardExpense.series}
-            type="polarArea"
-            width={900}
-            height={400}
-          />
-          <button
-            type="button"
-            onClick={closeClickedCardChart}
-            className={classes.closeButton}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <line
-                x1="200"
-                y1="56"
-                x2="56"
-                y2="200"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></line>
-              <line
-                x1="200"
-                y1="200"
-                x2="56"
-                y2="56"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></line>
-            </svg>
-          </button>
-        </div>
-      )}
-
-      {!showClickedCardChart && cardNumbersDaily[0][0] && (
-        <div className={classes.cardExpenses}>
-          <div className={classes.expense}>
-            <h4 className={classes.allCardsText}>
-              Tüm kartlar için {period} harcama kategorileri
-            </h4>
+          <div className={classes.donutChart}>
             <ReactApexChart
-              className={classes.cardExpense}
-              options={cardExpense.options}
-              series={cardExpense.series}
-              type="polarArea"
-              width={900}
-              height={400}
+              options={gradient.options}
+              series={percentageAmounts}
+              type="donut"
+              height={300}
             />
           </div>
         </div>
-      )}
+        <div className={classes.totalExpenseText}>
+          <h3>Toplam {period} harcama</h3>
+          <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
+        </div>
+
+        {cardNumbersDaily[0][0] && showClickedCardChart && (
+          <div className={classes.clickedCardChart}>
+            <h4 className={classes.allCardsText}>
+              {clickedCardNumber} nolu kart bazında {period} harcama
+              kategorileri
+            </h4>
+            <div className={classes.clickedArea}>
+              <ReactApexChart
+                className={classes.cardExpense}
+                options={clickedCardExpense.options}
+                series={clickedCardExpense.series}
+                type="polarArea"
+                width={600}
+                height={400}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={closeClickedCardChart}
+              className={classes.closeButton}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="#000000"
+                viewBox="0 0 256 256"
+              >
+                <rect width="256" height="256" fill="none"></rect>
+                <line
+                  x1="200"
+                  y1="56"
+                  x2="56"
+                  y2="200"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></line>
+                <line
+                  x1="200"
+                  y1="200"
+                  x2="56"
+                  y2="56"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></line>
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {!showClickedCardChart && cardNumbersDaily[0][0] && (
+          <div className={classes.cardExpenses}>
+            <div className={classes.expense}>
+              <h4 className={classes.allCardsText}>
+                Tüm kartlar için {period} harcama kategorileri
+              </h4>
+              <ReactApexChart
+                className={classes.cardExpense}
+                options={cardExpense.options}
+                series={cardExpense.series}
+                type="polarArea"
+                width={900}
+                height={400}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+      <div className={classes.container}>
+        {cardNumbers[0] && (
+          <div className={classes.select}>
+            <h3>Son kart hareketlerini görmek için: </h3>
+            <select name="card" id="" onChange={filterCardHandler}>
+              <option value="">Kart seçiniz</option>
+              {cardNumbersFilter.map((item) => {
+                return <option value={item}>{item}</option>;
+              })}
+            </select>
+            {filterCard && (
+              <div className={classes.transactionTable}>
+                <table className={classes.transactionTables}>
+                  <thead>
+                    <th>Kart numarası</th>
+                    <th>İşlem tutarı</th>
+                    <th>İşlem kategorisi</th>
+                    <th>İşlem açıklaması</th>
+                    <th>İşlem tarihi - saati</th>
+                  </thead>
+                  <tbody>
+                    <td>
+                      <tr>
+                        {sortedCardRawData.map((card) => {
+                          if (card.card_no === filterCard) {
+                            return <tr>{card.card_no}</tr>;
+                          }
+                        })}
+                      </tr>
+                    </td>
+                    <td>
+                      <tr>
+                        {sortedCardRawData.map((card) => {
+                          if (card.card_no === filterCard) {
+                            return (
+                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
+                            );
+                          }
+                        })}
+                      </tr>
+                    </td>
+                    <td>
+                      <tr>
+                        {sortedCardRawData.map((card) => {
+                          if (card.card_no === filterCard) {
+                            return <tr>{card.category}</tr>;
+                          }
+                        })}
+                      </tr>
+                    </td>
+                    <td>
+                      <tr>
+                        {sortedCardRawData.map((card) => {
+                          if (card.card_no === filterCard) {
+                            return <tr>{card.trx_desc}</tr>;
+                          }
+                        })}
+                      </tr>
+                    </td>
+                    <td>
+                      <tr>
+                        {sortedCardRawData.map((card) => {
+                          if (card.card_no === filterCard) {
+                            const minute = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(10, 12)
+                              .join("");
+                            const hour = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(8, 10)
+                              .join("");
+                            const day = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(6, 8)
+                              .join("");
+                            const month = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(4, 6)
+                              .join("");
+                            const year = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(0, 4)
+                              .join("");
+                            return (
+                              <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                            );
+                          }
+                        })}
+                      </tr>
+                    </td>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
