@@ -22,6 +22,7 @@ function App() {
   const [accountMonthly, setAccountMonthly] = useState([]);
   const [assetDaily, setAssetDaily] = useState([]);
   const [assetMonthly, setAssetMonthly] = useState([]);
+  const [accRaw, setAccRaw] = useState([]);
   const [load, setLoad] = useState(false);
   const [first, setFirst] = useState(false);
   const [second, setSecond] = useState(false);
@@ -32,7 +33,7 @@ function App() {
   const [seventh, setSeventh] = useState(false);
   const [eighth, setEighth] = useState(false);
   const [nineth, setNineth] = useState(false);
-
+  const [tenth, setTenth] = useState(false);
   const totalCardChart = useRef();
   const cardChart = useRef();
   const accChart = useRef();
@@ -53,7 +54,6 @@ function App() {
   const startDate = `${yearForAsset}${monthForAsset}${dayForAsset}`;
 
   const lastMonth = new Date(date.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
-  const dayForAssetMonth = `0${lastMonth.getDate()}`.slice(-2);
   const monthForAssetMonth = `0${lastMonth.getMonth() + 1}`.slice(-2);
   const yearForAssetMonth = lastMonth.getFullYear();
 
@@ -97,8 +97,12 @@ function App() {
 
     async function fetchCardDaily(customerNumber, today) {
       const response = await fetch(
-        `${baseURL}/customer/card/daily/${customerNumber}/${today}`
+        `${baseURL}/customer/card/daily/${customerNumber}/${today}/${today}`
       );
+
+      console.log("cardDaily", response);
+
+      console.log();
 
       if (response.ok) {
         setFirst(true);
@@ -109,8 +113,10 @@ function App() {
     }
     async function fetchCardRawData(customerNumber, today) {
       const response = await fetch(
-        `${baseURL}/transaction/credit/${customerNumber}/20211118113800/${today}000000`
+        `${baseURL}/transaction/credit/${customerNumber}/20210101000000/${today}235959`
       );
+
+      console.log("cardRaw", response);
 
       if (response.ok) {
         setSecond(true);
@@ -121,8 +127,10 @@ function App() {
     }
     async function fetchCardMonthly(customerNumber, monthlyPeriod) {
       const response = await fetch(
-        `${baseURL}/customer/card/monthly/${customerNumber}/${monthlyPeriod}`
+        `${baseURL}/customer/card/monthly/${customerNumber}/${monthlyPeriod}/${monthlyPeriod}`
       );
+
+      console.log("cardMonthly", response);
 
       if (response.ok) {
         setThird(true);
@@ -136,6 +144,8 @@ function App() {
         `${baseURL}/customer/category/daily/${customerNumber}/${today}`
       );
 
+      console.log("categoryDaily", response);
+
       if (response.ok) {
         setForth(true);
       }
@@ -147,6 +157,8 @@ function App() {
       const response = await fetch(
         `${baseURL}/customer/category/monthly/${customerNumber}/${monthlyPeriod}`
       );
+
+      console.log("categoryMonthly", response);
 
       if (response.ok) {
         setFifth(true);
@@ -160,6 +172,8 @@ function App() {
         `${baseURL}/customer/account/daily/${customerNumber}/${today}`
       );
 
+      console.log("accountDaily", response);
+
       if (response.ok) {
         setSixth(true);
       }
@@ -172,10 +186,14 @@ function App() {
         `${baseURL}/customer/account/monthly/${customerNumber}/${monthlyPeriod}`
       );
 
+      console.log("accountMonthly", response);
+
       if (response.ok) {
         setSeventh(true);
       }
       const data = await response.json();
+
+      console.log(data);
 
       setAccountMonthly(data);
     }
@@ -183,6 +201,8 @@ function App() {
       const response = await fetch(
         `${baseURL}/customer/asset/daily/${customerNumber}/${startDate}/${today}`
       );
+
+      console.log("assetDaily", response);
 
       if (response.ok) {
         setEighth(true);
@@ -209,6 +229,20 @@ function App() {
 
       setAssetMonthly(data);
     }
+    async function fetchAccRaw(customerNumber, today) {
+      const response = await fetch(
+        `${baseURL}/transaction/account/${customerNumber}/20210101000000/${today}000000`
+      );
+
+      console.log("accRaw", response);
+
+      if (response.ok) {
+        setTenth(true);
+      }
+      const data = await response.json();
+
+      setAccRaw(data);
+    }
 
     fetchCategoryMonthly(customerNumber, monthlyPeriod);
     fetchCategoryDaily(customerNumber, today);
@@ -219,6 +253,8 @@ function App() {
     fetchAccountMonthly(customerNumber, monthlyPeriod);
     fetchAssetDaily(customerNumber, today);
     fetchAssetMonthly(customerNumber, startDateMonth, monthlyPeriod);
+    fetchAccRaw(customerNumber, today);
+
     setLoad(true);
   };
 
@@ -232,14 +268,24 @@ function App() {
       sixth &&
       seventh &&
       eighth &&
-      nineth === true
+      nineth &&
+      tenth === true
     ) {
-      setTimeout(() => {
-        setShowData(true);
-        setLoad(false);
-      }, 1000);
+      setShowData(true);
+      setLoad(false);
     }
-  }, [first, second, third, forth, fifth, sixth, seventh, eighth, nineth]);
+  }, [
+    first,
+    second,
+    third,
+    forth,
+    fifth,
+    sixth,
+    seventh,
+    eighth,
+    nineth,
+    tenth,
+  ]);
 
   const customerNumberHandler = (e) => {
     setCustomerNumber(e.target.value);
@@ -248,6 +294,8 @@ function App() {
   const clearHandler = () => {
     setCustomerNumber("");
     setShowData(false);
+    setLoad(false);
+    window.location.reload();
   };
 
   return (
@@ -385,11 +433,7 @@ function App() {
         <div ref={cardChart}>
           <CardChart
             customerNumber={customerNumber}
-            cardDaily={cardDaily}
-            cardRawData={cardRawData}
             cardMonthly={cardMonthly}
-            categoryDaily={categoryDaily}
-            categoryMonthly={categoryMonthly}
           />
         </div>
       )}
@@ -401,6 +445,7 @@ function App() {
             accountMonthly={accountMonthly}
             assetDaily={assetDaily}
             assetMonthly={assetMonthly}
+            accRaw={accRaw}
           />
         </div>
       )}

@@ -14,9 +14,7 @@ const AccChart = (props) => {
   const categoryMonthly = props.accountMonthly;
   const assetDaily = props.assetDaily;
   const assetMonthly = props.assetMonthly;
-
-  console.log(assetDaily);
-  console.log(assetMonthly);
+  const accRaw = props.accRaw;
 
   let period = "";
 
@@ -45,21 +43,19 @@ const AccChart = (props) => {
 
   const barCategoryHandler = (e) => {
     e.preventDefault();
-    setBarCategory(categoryRef.current.value);
+    setBarCategory(barCategoryRef.current.value);
   };
 
   let positiveCategoryDaily = [];
   let negativeCategoryDaily = [];
 
   for (const key in categoryDaily) {
-    if (categoryDaily[key].customer_no === customerNumber) {
-      const item = categoryDaily[key].amount;
+    const item = categoryDaily[key].amount;
 
-      if (item < 0) {
-        negativeCategoryDaily.push(item);
-      } else {
-        positiveCategoryDaily.push(item);
-      }
+    if (item < 0) {
+      negativeCategoryDaily.push(item);
+    } else {
+      positiveCategoryDaily.push(item);
     }
   }
 
@@ -75,18 +71,24 @@ const AccChart = (props) => {
     sumNegativeAmountsDaily += Math.abs(negativeCategoryDaily[i]);
   }
 
+  if ((positiveCategoryDaily = [])) {
+    positiveCategoryDaily.push([0]);
+  }
+
+  if ((negativeCategoryDaily = [])) {
+    negativeCategoryDaily.push([0]);
+  }
+
   let positiveCategoryMonthly = [];
   let negativeCategoryMonthly = [];
 
   for (const key in categoryMonthly) {
-    if (categoryMonthly[key].customer_no === customerNumber) {
-      const item = categoryMonthly[key].amount;
+    const item = categoryMonthly[key].amount;
 
-      if (item < 0) {
-        negativeCategoryMonthly.push(item);
-      } else {
-        positiveCategoryMonthly.push(item);
-      }
+    if (item < 0) {
+      negativeCategoryMonthly.push(item);
+    } else {
+      positiveCategoryMonthly.push(item);
     }
   }
 
@@ -121,7 +123,7 @@ const AccChart = (props) => {
 
   let assetDailyExpense = [];
   assetDaily.map((item) => {
-    assetDailyExpense.push(item.expense_amount);
+    assetDailyExpense.push(Math.abs(item.expense_amount));
   });
 
   let assetDailyPeriod = [];
@@ -139,7 +141,7 @@ const AccChart = (props) => {
 
   let assetMonthlyExpense = [];
   assetMonthly.map((item) => {
-    assetMonthlyExpense.push(item.expense_amount);
+    assetMonthlyExpense.push(Math.abs(item.expense_amount));
   });
 
   let assetMonthlyPeriod = [];
@@ -163,7 +165,21 @@ const AccChart = (props) => {
     assetPeriod = assetMonthlyPeriod;
   }
 
-  console.log(barCategory);
+  let pieCategoryMonthly = [];
+
+  categoryMonthly.map((item) => {
+    pieCategoryMonthly.push(item.trx_desc);
+  });
+
+  let pieAmountsMonthly = [];
+  categoryMonthly.map((item) => {
+    pieAmountsMonthly.push(Math.abs(item.amount));
+  });
+
+  const sortedRawData = accRaw
+    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+    .reverse()
+    .slice(0, 20);
 
   const gradient = {
     options: {
@@ -267,61 +283,193 @@ const AccChart = (props) => {
     },
   };
 
+  const state = {
+    series: pieAmountsMonthly,
+
+    options: {
+      legend: {
+        labels: {
+          useSeriesColors: true,
+        },
+      },
+      fill: {
+        colors: [
+          "#F44336",
+          "#E91E63",
+          "#9C27B0",
+          "#fab005",
+          "#82c91e",
+          "#12b886",
+          "#15aabf",
+          "#228be6",
+          "#9775fa",
+        ],
+      },
+      chart: {
+        type: "donut",
+      },
+      labels: pieCategoryMonthly,
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200,
+            },
+            legend: {
+              position: "bottom",
+            },
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <div className={classes.container}>
-      <div className={classes.barChart}>
-        <div className={classes.selectPeriod}>
-          <div onSubmit={categoryHandler}>
-            <select
-              name="barPeriod"
-              id="barPeriod"
-              ref={barCategoryRef}
-              onChange={barCategoryHandler}
-            >
-              <option value="7days">Son 7 günlük işlemler</option>
-              <option value="6months">Son 6 aylık işlemler</option>
-            </select>
-          </div>
-        </div>
-        <h4 className={classes.allCardsText}>
-          Hesaplar ve kredi kartları için gelen ve giden tutarlar
-        </h4>
-        <ReactApexChart
-          options={bar.options}
-          series={bar.series}
-          type="bar"
-          height={400}
-          width={700}
-        />
-      </div>
-      {positiveCategoryDaily.length > 0 && (
-        <div className={classes.totalExpense}>
+      <div className={classes.flex}>
+        <div className={classes.barChart}>
           <div className={classes.selectPeriod}>
-            <div onSubmit={categoryHandler} className={classes.form}>
+            <div onSubmit={categoryHandler}>
               <select
-                name="period"
-                id="period"
-                ref={categoryRef}
-                onChange={categoryHandler}
+                name="barPeriod"
+                id="barPeriod"
+                ref={barCategoryRef}
+                onChange={barCategoryHandler}
               >
-                <option value="daily">Günlük hareketler</option>
-                <option value="monthly">Aylık hareketler</option>
+                <option value="7days">Son 7 günlük işlemler</option>
+                <option value="6months">
+                  Son {assetMonthlyPeriod.length} aylık işlemler
+                </option>
               </select>
             </div>
           </div>
           <h4 className={classes.allCardsText}>
-            Tüm hesaplar için {period} gelen ve giden tutarlar
+            Tüm varlıklar için gelen ve giden tutarlar
           </h4>
-
           <ReactApexChart
-            className={classes.gradientChart}
-            options={gradient.options}
-            series={[sumPositive, sumNegative]}
-            type="donut"
+            options={bar.options}
+            series={bar.series}
+            type="bar"
             height={400}
+            width={700}
           />
         </div>
-      )}
+        {positiveCategoryDaily.length > 0 && (
+          <div className={classes.totalExpense}>
+            <div className={classes.selectPeriod}>
+              <div onSubmit={categoryHandler} className={classes.form}>
+                <select
+                  name="period"
+                  id="period"
+                  ref={categoryRef}
+                  onChange={categoryHandler}
+                >
+                  <option value="daily">Günlük hareketler</option>
+                  <option value="monthly">Aylık hareketler</option>
+                </select>
+              </div>
+            </div>
+            <h4 className={classes.allCardsText}>
+              Tüm hesaplar için {period} gelen ve giden tutarlar
+            </h4>
+
+            <ReactApexChart
+              className={classes.gradientChart}
+              options={gradient.options}
+              series={[sumPositive, sumNegative]}
+              type="donut"
+              height={400}
+            />
+          </div>
+        )}
+      </div>
+      <div className={classes.flex2}>
+        <div className={classes.pieChart}>
+          <h4 className={classes.allCardsText2}>
+            Tüm hesaplar için aylık hareket kategorileri
+          </h4>
+          <ReactApexChart
+            options={state.options}
+            series={state.series}
+            type="donut"
+            width={600}
+          />
+        </div>
+        <div className={classes.accTransactions}>
+          <h4 className={classes.allCardsText}>Son 20 hesap hareketleri</h4>
+          <div className={classes.transactionTable}>
+            <table className={classes.transactionTables}>
+              <thead>
+                <th>Hesap numarası</th>
+                <th>İşlem tutarı</th>
+                <th>İşlem açıklaması</th>
+                <th>İşlem tarihi - saati</th>
+              </thead>
+              <tbody>
+                <td>
+                  <tr>
+                    {sortedRawData.map((card) => {
+                      return (
+                        <tr className={classes.amounts}>{card.account_no}</tr>
+                      );
+                    })}
+                  </tr>
+                </td>
+                <td>
+                  <tr>
+                    {sortedRawData.map((card) => {
+                      return <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>;
+                    })}
+                  </tr>
+                </td>
+
+                <td>
+                  <tr>
+                    {sortedRawData.map((card) => {
+                      return <tr>{card.trx_desc}</tr>;
+                    })}
+                  </tr>
+                </td>
+                <td>
+                  <tr>
+                    {sortedRawData.map((card) => {
+                      const minute = card.timestamp
+                        .toString()
+                        .split("")
+                        .slice(10, 12)
+                        .join("");
+                      const hour = card.timestamp
+                        .toString()
+                        .split("")
+                        .slice(8, 10)
+                        .join("");
+                      const day = card.timestamp
+                        .toString()
+                        .split("")
+                        .slice(6, 8)
+                        .join("");
+                      const month = card.timestamp
+                        .toString()
+                        .split("")
+                        .slice(4, 6)
+                        .join("");
+                      const year = card.timestamp
+                        .toString()
+                        .split("")
+                        .slice(0, 4)
+                        .join("");
+                      return (
+                        <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                      );
+                    })}
+                  </tr>
+                </td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

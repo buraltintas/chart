@@ -1,43 +1,84 @@
-import { useState } from "react/cjs/react.development";
+import { useEffect, useState } from "react/cjs/react.development";
 import ReactApexChart from "react-apexcharts";
 import classes from "./CardChart.module.css";
 
 const CardChart = (props) => {
   const [filterCard, setFilterCard] = useState("");
+  const [filterPeriod, setFilterPeriod] = useState("weekly");
+  const [cardWeekly, setCardWeekly] = useState([]);
+  const [cardMonthly, setCardMonthly] = useState([]);
 
   const filterCardHandler = (e) => {
     setFilterCard(e.target.value);
   };
 
+  const filterPeriodHandler = (e) => {
+    setFilterPeriod(e.target.value);
+  };
+
+  const year = new Date().getFullYear();
+  const month = new Date().getMonth();
+  const day = new Date().getDate();
+  const today = `${year}${month + 1}${day}`;
+  const monthlyPeriod = `${year}${month + 1}`;
+
+  const days = 7;
+  const date = new Date();
+  const last = new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
+  const dayForAsset = last.getDate();
+  const monthForAsset = last.getMonth() + 1;
+  const yearForAsset = last.getFullYear();
+  const startDate = `${yearForAsset}${monthForAsset}${dayForAsset}`;
+
+  const lastMonth = new Date(date.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+  const monthForAssetMonth = `0${lastMonth.getMonth() + 1}`.slice(-2);
+  const yearForAssetMonth = lastMonth.getFullYear();
+  const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
+
   const customerNumber = props.customerNumber;
+  const cardNumberMonthly = props.cardMonthly;
 
-  const cardRawData = props.cardRawData;
-  const cardDaily = props.cardDaily;
-  const cardMonthly = props.cardMonthly;
-  const categoryDaily = props.categoryDaily;
-  const categoryMonthly = props.categoryMonthly;
+  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
 
-  const cardNumbers = cardDaily.map(
-    (item) =>
-      item.customer_no === customerNumber &&
-      customerNumber.length > 0 &&
-      item.card_no
-  );
+  useEffect(() => {
+    async function fetchCardDaily(customerNumber, startDate, today) {
+      const response = await fetch(
+        `${baseURL}/customer/card/daily/${customerNumber}/${startDate}/${today}`
+      );
 
-  console.log(categoryDaily);
-  console.log(categoryMonthly);
+      console.log("cardDaily", response);
 
-  const sortedCardRawData = cardRawData
-    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
-    .reverse();
+      const data = await response.json();
 
-  // const filteredItems = cardRawData.filter(
-  //   (item) =>
-  //     item.customer_no.includes(customerNumber) &&
-  //     customerNumber.length > 0 &&
-  //     filterCard.length > 0 &&
-  //     item.card_no.includes(filterCard)
-  // );
+      setCardWeekly(data);
+    }
+    async function fetchCardMonthly(
+      customerNumber,
+      startDateMonth,
+      monthlyPeriod
+    ) {
+      const response = await fetch(
+        `${baseURL}/customer/card/monthly/${customerNumber}/${startDateMonth}/${monthlyPeriod}`
+      );
+
+      console.log("cardMonthly", response);
+
+      const data = await response.json();
+
+      setCardMonthly(data);
+    }
+    fetchCardMonthly(customerNumber, startDateMonth, monthlyPeriod);
+    fetchCardDaily(customerNumber, startDate, today);
+  }, []);
+
+  console.log(cardWeekly);
+  console.log(cardMonthly);
+
+  let cardNumbersFilter = [];
+
+  cardNumbersFilter.push(cardNumberMonthly.map((item) => item.card_no));
+
+  console.log(cardNumbersFilter);
 
   const state = {
     series: [
@@ -61,7 +102,7 @@ const CardChart = (props) => {
         curve: "straight",
       },
       title: {
-        text: "Product Trends by Month",
+        text: "Kart Bazında Harcama Grafiği",
         align: "left",
       },
       grid: {
@@ -88,13 +129,27 @@ const CardChart = (props) => {
 
   return (
     <div className={classes.container}>
-      <ReactApexChart
-        options={state.options}
-        series={state.series}
-        type="line"
-        height={400}
-        width={900}
-      />
+      <div className={classes.selects}>
+        <select name="card" id="" onChange={filterPeriodHandler}>
+          <option value="weekly">Haftalık</option>
+          <option value="monthly">Aylık</option>
+        </select>
+        <select name="card" id="" onChange={filterCardHandler}>
+          <option value="all">Kart seçiniz</option>
+          {cardNumberMonthly.map((item) => {
+            return <option value={item.card_no}>{item.card_no}</option>;
+          })}
+        </select>
+      </div>
+      <div className={classes.lineChart}>
+        <ReactApexChart
+          options={state.options}
+          series={state.series}
+          type="line"
+          height={500}
+          width={1200}
+        />
+      </div>
     </div>
   );
 };

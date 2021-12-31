@@ -7,7 +7,7 @@ const NewChart = (props) => {
   const [category, setCategory] = useState("daily");
   const [clickedCardNumber, setClickedCardNumber] = useState("");
   const [showClickedCardChart, setShowClickedCardChart] = useState(false);
-  const [filterCard, setFilterCard] = useState("");
+  const [filterCard, setFilterCard] = useState("all");
   const [clickedCardDaily, setclickedCardDaily] = useState([]);
   const [clickedCardMonthly, setclickedCardMonthly] = useState([]);
 
@@ -141,18 +141,20 @@ const NewChart = (props) => {
     setFilterCard(e.target.value);
   };
 
-  const cardNumbersFilter = cardDaily.map(
+  const cardNumbersFilter = cardMonthly.map(
     (item) =>
       item.customer_no === customerNumber &&
       customerNumber.length > 0 &&
       item.card_no
   );
 
-  const sortedCardRawData = cardRawData
+  if (filterCard === "all") {
+  }
 
+  const sortedCardRawData = cardRawData
     .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     .reverse()
-    .slice(0, 80);
+    .slice(0, 30);
 
   const cardExpense = {
     series: categoryAmounts[0],
@@ -202,7 +204,7 @@ const NewChart = (props) => {
       chart: {
         events: {
           dataPointSelection: function (event, chartContext, config) {
-            console.log(config.w.config.labels[config.dataPointIndex]);
+            // console.log(config.w.config.labels[config.dataPointIndex]);
 
             setClickedCardNumber(config.w.config.labels[config.dataPointIndex]);
 
@@ -256,8 +258,6 @@ const NewChart = (props) => {
           `${baseURL}/customer/card/category/daily/${customerNumber}/${clickedCardNumber}/${today}`
         );
 
-        console.log("cardDaily", response);
-
         const data = await response.json();
 
         setclickedCardDaily(data);
@@ -267,8 +267,6 @@ const NewChart = (props) => {
           `${baseURL}/customer/card/category/monthly/${customerNumber}/${clickedCardNumber}/${monthlyPeriod}`
         );
 
-        console.log("cardDaily", response);
-
         const data = await response.json();
 
         setclickedCardMonthly(data);
@@ -277,9 +275,6 @@ const NewChart = (props) => {
       fetchCardDaily(customerNumber, today);
     }
   }, [clickedCardNumber]);
-
-  console.log(clickedCardDaily);
-  console.log(clickedCardMonthly);
 
   const clickedCardCategoryNameDaily = [];
 
@@ -409,7 +404,7 @@ const NewChart = (props) => {
                 className={classes.cardExpense}
                 options={clickedCardExpense.options}
                 series={clickedCardExpense.series}
-                type="polarArea"
+                type="donut"
                 width={600}
                 height={400}
               />
@@ -462,9 +457,9 @@ const NewChart = (props) => {
                 className={classes.cardExpense}
                 options={cardExpense.options}
                 series={cardExpense.series}
-                type="polarArea"
-                width={900}
-                height={400}
+                type="donut"
+                width={600}
+                height={300}
               />
             </div>
           </div>
@@ -475,7 +470,7 @@ const NewChart = (props) => {
           <div className={classes.select}>
             <h3>Son kart hareketlerini görmek için: </h3>
             <select name="card" id="" onChange={filterCardHandler}>
-              <option value="">Kart seçiniz</option>
+              <option value="all">Kart seçiniz</option>
               {cardNumbersFilter.map((item) => {
                 return <option value={item}>{item}</option>;
               })}
@@ -497,6 +492,9 @@ const NewChart = (props) => {
                           if (card.card_no === filterCard) {
                             return <tr>{card.card_no}</tr>;
                           }
+                          if (filterCard === "all" || "") {
+                            return <tr>{card.card_no}</tr>;
+                          }
                         })}
                       </tr>
                     </td>
@@ -504,6 +502,11 @@ const NewChart = (props) => {
                       <tr>
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
+                            return (
+                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
+                            );
+                          }
+                          if (filterCard === "all" || "") {
                             return (
                               <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
                             );
@@ -517,6 +520,9 @@ const NewChart = (props) => {
                           if (card.card_no === filterCard) {
                             return <tr>{card.category}</tr>;
                           }
+                          if (filterCard === "all" || "") {
+                            return <tr>{card.category}</tr>;
+                          }
                         })}
                       </tr>
                     </td>
@@ -526,6 +532,9 @@ const NewChart = (props) => {
                           if (card.card_no === filterCard) {
                             return <tr>{card.trx_desc}</tr>;
                           }
+                          if (filterCard === "all" || "") {
+                            return <tr>{card.trx_desc}</tr>;
+                          }
                         })}
                       </tr>
                     </td>
@@ -533,6 +542,36 @@ const NewChart = (props) => {
                       <tr>
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
+                            const minute = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(10, 12)
+                              .join("");
+                            const hour = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(8, 10)
+                              .join("");
+                            const day = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(6, 8)
+                              .join("");
+                            const month = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(4, 6)
+                              .join("");
+                            const year = card.timestamp
+                              .toString()
+                              .split("")
+                              .slice(0, 4)
+                              .join("");
+                            return (
+                              <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                            );
+                          }
+                          if (filterCard === "all" || "") {
                             const minute = card.timestamp
                               .toString()
                               .split("")

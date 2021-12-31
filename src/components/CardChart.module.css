@@ -5,100 +5,25 @@
   min-height: 80rem;
 }
 
-.customerNumberInput {
-  margin: 2rem;
-  width: 20%;
+.selects {
+  width: 100%;
   display: flex;
-  text-align: center;
-  gap: 1rem;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
 }
 
-.tableContainer {
-  width: 100%;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+.selects select {
+  width: 17rem;
+}
+
+.lineChart {
+  margin: 0 auto;
+  margin-top: 8rem;
+  width: 90%;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.table {
-  width: 50%;
-  text-align: center;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  font-size: 1.5rem;
-}
-
-th {
-  /* max-width: auto; */
-  color: #fff;
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  text-align: center;
-  background-image: linear-gradient(256deg, #1e95d6, #006cb7);
-}
-
-td {
-  max-width: auto;
-  /* height: auto; */
-  padding: 0.5rem !important;
-  border: 1px solid #ccc;
-}
-
-.select {
-  margin: 0 auto;
-  margin-top: 1rem;
-
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-top: 1px solid #ccc;
-}
-
-.select h3 {
-  margin-top: 1rem;
-  width: 20rem;
-  text-align: center;
-}
-
-.select select {
-  margin-top: 0.5rem;
-  width: 18rem;
-}
-
-.transactionTable {
-  margin: 0 auto;
-  font-size: 1.5rem;
-  width: 100%;
-  margin-top: 3rem;
-  margin-bottom: 5rem;
-  display: flex;
-  /* align-items: center;
-  justify-content: center; */
-}
-
-.transactionTables {
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 1rem;
-  font-size: 1.5rem;
-}
-
-.transactionTables tr {
-  width: 100%;
-  display: block;
-}
-
-.transactionTables tr:nth-of-type(even) {
-  background-color: rgba(238, 228, 228, 0.541);
-}
-
-h4 {
-  font-size: 3rem;
-  text-align: center;
-  margin-top: 4rem;
-  color: red;
 }
