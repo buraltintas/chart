@@ -135,7 +135,7 @@ const AccChart = (props) => {
   });
 
   let assetMonthlyIncome = [];
-  assetDaily.map((item) => {
+  assetMonthly.map((item) => {
     assetMonthlyIncome.push(item.income_amount);
   });
 
@@ -183,6 +183,7 @@ const AccChart = (props) => {
 
   const gradient = {
     options: {
+      colors: ["#17b417", "#b41111"],
       chart: {
         // events: {
         //   dataPointSelection: function (event, chartContext, config) {
@@ -203,8 +204,10 @@ const AccChart = (props) => {
         enabled: true,
       },
       fill: {
-        type: "gradient",
-        colors: ["rgb(35, 131, 35)", "rgb(189, 24, 24)"],
+        // type: "gradient",
+
+        type: "solid",
+        opacity: [0.75, 1],
       },
       legend: {
         show: false,
@@ -242,6 +245,7 @@ const AccChart = (props) => {
       },
     ],
     options: {
+      colors: ["#17b417", "#b41111"],
       chart: {
         type: "bar",
         height: 350,
@@ -272,6 +276,8 @@ const AccChart = (props) => {
       fill: {
         opacity: 1,
         colors: ["#17b417", "#b41111"],
+        type: "solid",
+        opacity: [0.75, 1],
       },
       tooltip: {
         y: {
@@ -287,23 +293,25 @@ const AccChart = (props) => {
     series: pieAmountsMonthly,
 
     options: {
+      colors: [
+        "#9775fa",
+        "#9C27B0",
+        "#F44336",
+        "#E91E63",
+        "#fab005",
+        "#82c91e",
+        "#12b886",
+        "#15aabf",
+        "#228be6",
+      ],
       legend: {
         labels: {
           useSeriesColors: true,
         },
       },
       fill: {
-        colors: [
-          "#F44336",
-          "#E91E63",
-          "#9C27B0",
-          "#fab005",
-          "#82c91e",
-          "#12b886",
-          "#15aabf",
-          "#228be6",
-          "#9775fa",
-        ],
+        type: "solid",
+        opacity: [0.75, 1],
       },
       chart: {
         type: "donut",

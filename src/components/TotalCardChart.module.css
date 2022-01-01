@@ -9,7 +9,8 @@
 
 .left {
   height: 80rem;
-  width: 195rem;
+  width: 190rem;
+
   border-right: 1px dashed #ccc;
   display: flex;
   flex-direction: column;
@@ -208,8 +209,8 @@ button:hover {
   margin: 0 auto;
   font-size: 1.5rem;
   width: 100%;
-  margin-top: 3rem;
-  margin-bottom: 5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   display: flex;
   align-items: center;
 }
@@ -224,6 +225,23 @@ button:hover {
 .transactionTables tr {
   width: 100%;
   display: block;
+  padding: 1px;
+}
+
+tr {
+  padding: 1px;
+}
+
+th {
+  text-align: start;
+  padding: 1px;
+}
+
+table,
+td,
+th {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
 }
 
 .transactionTables tr:nth-of-type(even) {

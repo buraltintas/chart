@@ -39,17 +39,17 @@ function App() {
   const accChart = useRef();
 
   const year = new Date().getFullYear();
-  const month = new Date().getMonth();
-  const day = new Date().getDate();
-  const today = `${year}${month + 1}${day}`;
+  const month = `0${new Date().getMonth() + 1}`.slice(-2);
+  const day = `0${new Date().getDate()}`.slice(-2);
+  const today = `${year}${month}${day}`;
 
-  const monthlyPeriod = `${year}${month + 1}`;
+  const monthlyPeriod = `${year}${month}`;
 
   const days = 7;
   const date = new Date();
   const last = new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
-  const dayForAsset = last.getDate();
-  const monthForAsset = last.getMonth() + 1;
+  const dayForAsset = `0${last.getDate()}`.slice(-2);
+  const monthForAsset = `0${last.getMonth() + 1}`.slice(-2);
   const yearForAsset = last.getFullYear();
   const startDate = `${yearForAsset}${monthForAsset}${dayForAsset}`;
 
@@ -100,10 +100,6 @@ function App() {
         `${baseURL}/customer/card/daily/${customerNumber}/${today}/${today}`
       );
 
-      console.log("cardDaily", response);
-
-      console.log();
-
       if (response.ok) {
         setFirst(true);
       }
@@ -115,8 +111,6 @@ function App() {
       const response = await fetch(
         `${baseURL}/transaction/credit/${customerNumber}/20210101000000/${today}235959`
       );
-
-      console.log("cardRaw", response);
 
       if (response.ok) {
         setSecond(true);
@@ -130,8 +124,6 @@ function App() {
         `${baseURL}/customer/card/monthly/${customerNumber}/${monthlyPeriod}/${monthlyPeriod}`
       );
 
-      console.log("cardMonthly", response);
-
       if (response.ok) {
         setThird(true);
       }
@@ -143,8 +135,6 @@ function App() {
       const response = await fetch(
         `${baseURL}/customer/category/daily/${customerNumber}/${today}`
       );
-
-      console.log("categoryDaily", response);
 
       if (response.ok) {
         setForth(true);
@@ -158,8 +148,6 @@ function App() {
         `${baseURL}/customer/category/monthly/${customerNumber}/${monthlyPeriod}`
       );
 
-      console.log("categoryMonthly", response);
-
       if (response.ok) {
         setFifth(true);
       }
@@ -171,8 +159,6 @@ function App() {
       const response = await fetch(
         `${baseURL}/customer/account/daily/${customerNumber}/${today}`
       );
-
-      console.log("accountDaily", response);
 
       if (response.ok) {
         setSixth(true);
@@ -186,14 +172,10 @@ function App() {
         `${baseURL}/customer/account/monthly/${customerNumber}/${monthlyPeriod}`
       );
 
-      console.log("accountMonthly", response);
-
       if (response.ok) {
         setSeventh(true);
       }
       const data = await response.json();
-
-      console.log(data);
 
       setAccountMonthly(data);
     }
@@ -201,8 +183,6 @@ function App() {
       const response = await fetch(
         `${baseURL}/customer/asset/daily/${customerNumber}/${startDate}/${today}`
       );
-
-      console.log("assetDaily", response);
 
       if (response.ok) {
         setEighth(true);
@@ -220,8 +200,6 @@ function App() {
         `${baseURL}/customer/asset/monthly/${customerNumber}/${startDateMonth}/${monthlyPeriod}`
       );
 
-      console.log("assetMonthly", response);
-
       if (response.ok) {
         setNineth(true);
       }
@@ -233,8 +211,6 @@ function App() {
       const response = await fetch(
         `${baseURL}/transaction/account/${customerNumber}/20210101000000/${today}000000`
       );
-
-      console.log("accRaw", response);
 
       if (response.ok) {
         setTenth(true);
@@ -307,109 +283,113 @@ function App() {
             <h1>PFM</h1>
           </div>
         </div>
-        <div className={classes.buttons}>
-          <ul className={classes.navButtons}>
-            <li
-              onClick={showTotalCardHandler}
-              className={`${totalCardActive ? "active" : ""}`}
-            >
-              Kart Toplam Harcamalar
-            </li>
-            <li
-              onClick={showCardHandler}
-              className={showCardActive ? "active" : ""}
-            >
-              Kart Bazında Harcamalar
-            </li>
-            <li
-              onClick={showAccHandler}
-              className={showAccActive ? "active" : ""}
-            >
-              Hesap Hareketleri
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <form
-        onSubmit={customerNumberButtonHandler}
-        className={classes.customerNumberInput}
-      >
-        <input
-          type="number"
-          placeholder="Müşteri numarası"
-          value={customerNumber}
-          onChange={customerNumberHandler}
-          required
-          disabled={showData}
-        />
-        {!showData && (
-          <button type="submit">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <circle
-                cx="116"
-                cy="116"
-                r="84"
-                fill="none"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></circle>
-              <line
-                x1="175.4"
-                y1="175.4"
-                x2="224"
-                y2="224"
-                fill="none"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></line>
-            </svg>
-          </button>
-        )}
         {showData && (
-          <button type="button" onClick={clearHandler}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              fill="#000000"
-              viewBox="0 0 256 256"
-            >
-              <rect width="256" height="256" fill="none"></rect>
-              <line
-                x1="200"
-                y1="56"
-                x2="56"
-                y2="200"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></line>
-              <line
-                x1="200"
-                y1="200"
-                x2="56"
-                y2="56"
-                stroke="#000000"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="16"
-              ></line>
-            </svg>
-          </button>
+          <div className={classes.buttons}>
+            <ul className={classes.navButtons}>
+              <li
+                onClick={showTotalCardHandler}
+                className={`${totalCardActive ? "active" : ""}`}
+              >
+                Kart Toplam Harcamalar
+              </li>
+              <li
+                onClick={showCardHandler}
+                className={showCardActive ? "active" : ""}
+              >
+                Kart Bazında Harcamalar
+              </li>
+              <li
+                onClick={showAccHandler}
+                className={showAccActive ? "active" : ""}
+              >
+                Hesap Hareketleri
+              </li>
+            </ul>
+          </div>
         )}
-      </form>
+      </nav>
+      <div className={classes.form}>
+        <form
+          onSubmit={customerNumberButtonHandler}
+          className={classes.customerNumberInput}
+        >
+          <input
+            type="number"
+            placeholder="Müşteri numarası"
+            value={customerNumber}
+            onChange={customerNumberHandler}
+            required
+            disabled={showData}
+          />
+          {!showData && (
+            <button type="submit">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="#000000"
+                viewBox="0 0 256 256"
+              >
+                <rect width="256" height="256" fill="none"></rect>
+                <circle
+                  cx="116"
+                  cy="116"
+                  r="84"
+                  fill="none"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></circle>
+                <line
+                  x1="175.4"
+                  y1="175.4"
+                  x2="224"
+                  y2="224"
+                  fill="none"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></line>
+              </svg>
+            </button>
+          )}
+          {showData && (
+            <button type="button" onClick={clearHandler}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                fill="#000000"
+                viewBox="0 0 256 256"
+              >
+                <rect width="256" height="256" fill="none"></rect>
+                <line
+                  x1="200"
+                  y1="56"
+                  x2="56"
+                  y2="200"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></line>
+                <line
+                  x1="200"
+                  y1="200"
+                  x2="56"
+                  y2="56"
+                  stroke="#000000"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="16"
+                ></line>
+              </svg>
+            </button>
+          )}
+        </form>
+      </div>
 
       {load && (
         <div className={classes.loading}>

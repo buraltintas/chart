@@ -17,22 +17,24 @@ const CardChart = (props) => {
   };
 
   const year = new Date().getFullYear();
-  const month = new Date().getMonth();
-  const day = new Date().getDate();
-  const today = `${year}${month + 1}${day}`;
-  const monthlyPeriod = `${year}${month + 1}`;
+  const month = `0${new Date().getMonth() + 1}`.slice(-2);
+  const day = `0${new Date().getDate()}`.slice(-2);
+  const today = `${year}${month}${day}`;
+
+  const monthlyPeriod = `${year}${month}`;
 
   const days = 7;
   const date = new Date();
   const last = new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
-  const dayForAsset = last.getDate();
-  const monthForAsset = last.getMonth() + 1;
+  const dayForAsset = `0${last.getDate()}`.slice(-2);
+  const monthForAsset = `0${last.getMonth() + 1}`.slice(-2);
   const yearForAsset = last.getFullYear();
   const startDate = `${yearForAsset}${monthForAsset}${dayForAsset}`;
 
   const lastMonth = new Date(date.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
   const monthForAssetMonth = `0${lastMonth.getMonth() + 1}`.slice(-2);
   const yearForAssetMonth = lastMonth.getFullYear();
+
   const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
 
   const customerNumber = props.customerNumber;
@@ -74,11 +76,16 @@ const CardChart = (props) => {
   console.log(cardWeekly);
   console.log(cardMonthly);
 
-  let cardNumbersFilter = [];
+  console.log(filterCard);
 
-  cardNumbersFilter.push(cardNumberMonthly.map((item) => item.card_no));
+  let filteredCardPeriodWeekly = [];
 
-  console.log(cardNumbersFilter);
+  cardWeekly.filter(
+    (item) =>
+      item.card_no === filterCard && filteredCardPeriodWeekly.push(item.period)
+  );
+
+  console.log(filteredCardPeriodWeekly);
 
   const state = {
     series: [

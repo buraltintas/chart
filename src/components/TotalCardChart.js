@@ -24,11 +24,11 @@ const NewChart = (props) => {
   }
 
   const year = new Date().getFullYear();
-  const month = new Date().getMonth();
-  const day = new Date().getDate();
-  const today = `${year}${month + 1}${day}`;
+  const month = `0${new Date().getMonth() + 1}`.slice(-2);
+  const day = `0${new Date().getDate()}`.slice(-2);
+  const today = `${year}${month}${day}`;
 
-  const monthlyPeriod = `${year}${month + 1}`;
+  const monthlyPeriod = `${year}${month}`;
 
   const categoryHandler = (e) => {
     e.preventDefault();
@@ -161,7 +161,7 @@ const NewChart = (props) => {
     options: {
       chart: {
         width: 380,
-        type: "polarArea",
+        type: "donut",
       },
       labels: categoryName[0],
       fill: {
@@ -470,7 +470,7 @@ const NewChart = (props) => {
           <div className={classes.select}>
             <h3>Son kart hareketlerini görmek için: </h3>
             <select name="card" id="" onChange={filterCardHandler}>
-              <option value="all">Kart seçiniz</option>
+              <option value="all">Tüm kartlar</option>
               {cardNumbersFilter.map((item) => {
                 return <option value={item}>{item}</option>;
               })}
