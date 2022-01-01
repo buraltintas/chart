@@ -3,7 +3,15 @@ import ReactApexChart from "react-apexcharts";
 import classes from "./CardChart.module.css";
 
 const CardChart = (props) => {
-  const [filterCard, setFilterCard] = useState("");
+  const customerNumber = props.customerNumber;
+  const cardNumberMonthly = props.cardMonthly;
+  let initialCardNumber = [];
+
+  cardNumberMonthly.map((item) => initialCardNumber.push(item.card_no));
+
+  console.log(initialCardNumber);
+
+  const [filterCard, setFilterCard] = useState(+initialCardNumber[0]);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [cardWeekly, setCardWeekly] = useState([]);
   const [cardMonthly, setCardMonthly] = useState([]);
@@ -37,9 +45,6 @@ const CardChart = (props) => {
 
   const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
 
-  const customerNumber = props.customerNumber;
-  const cardNumberMonthly = props.cardMonthly;
-
   const baseURL = "http://f98f-46-1-227-44.ngrok.io";
 
   useEffect(() => {
@@ -47,8 +52,6 @@ const CardChart = (props) => {
       const response = await fetch(
         `${baseURL}/customer/card/daily/${customerNumber}/${startDate}/${today}`
       );
-
-      console.log("cardDaily", response);
 
       const data = await response.json();
 
@@ -63,8 +66,6 @@ const CardChart = (props) => {
         `${baseURL}/customer/card/monthly/${customerNumber}/${startDateMonth}/${monthlyPeriod}`
       );
 
-      console.log("cardMonthly", response);
-
       const data = await response.json();
 
       setCardMonthly(data);
@@ -72,11 +73,6 @@ const CardChart = (props) => {
     fetchCardMonthly(customerNumber, startDateMonth, monthlyPeriod);
     fetchCardDaily(customerNumber, startDate, today);
   }, []);
-
-  console.log(cardWeekly);
-  console.log(cardMonthly);
-
-  console.log(filterCard);
 
   let filteredCardPeriodWeekly = [];
   let filteredCardAmountsWeekly = [];
@@ -87,8 +83,6 @@ const CardChart = (props) => {
       filteredCardPeriodWeekly.push(item.period) &&
       filteredCardAmountsWeekly.push(Math.abs(item.amount))
   );
-
-  console.log(filteredCardPeriodWeekly);
 
   const state = {
     series: [
@@ -114,8 +108,8 @@ const CardChart = (props) => {
         curve: "straight",
       },
       title: {
-        text: `Kart Bazında ${
-          filterPeriod === "weekly" ? "Haftalık" : "Aylık"
+        text: `${filterCard} nolu Kart Bazında ${
+          filterPeriod === "weekly" ? "Haftalık" : "Son 6 Aylık"
         } Hareketler`,
         align: "left",
       },
@@ -142,27 +136,31 @@ const CardChart = (props) => {
     <div className={classes.container}>
       <div className={classes.selects}>
         <select name="card" id="" onChange={filterPeriodHandler}>
-          <option value="weekly">Haftalık</option>
-          <option value="monthly">Son 6 Aylık</option>
+          <option value="weekly" id="weekly">
+            Haftalık
+          </option>
+
+          <option value="monthly" id="monthly">
+            Son 6 Aylık
+          </option>
         </select>
         <select name="card" id="" onChange={filterCardHandler}>
-          <option value="all">Kart seçiniz</option>
+          {/* <option value="">Kart seçiniz</option> */}
           {cardNumberMonthly.map((item) => {
             return <option value={item.card_no}>{item.card_no}</option>;
           })}
         </select>
       </div>
-      {filterCard.length > 0 && (
-        <div className={classes.lineChart}>
-          <ReactApexChart
-            options={state.options}
-            series={state.series}
-            type="line"
-            height={500}
-            width={1200}
-          />
-        </div>
-      )}
+
+      <div className={classes.lineChart}>
+        <ReactApexChart
+          options={state.options}
+          series={state.series}
+          type="line"
+          height={500}
+          width={1200}
+        />
+      </div>
     </div>
   );
 };
