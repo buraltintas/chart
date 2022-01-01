@@ -79,10 +79,13 @@ const CardChart = (props) => {
   console.log(filterCard);
 
   let filteredCardPeriodWeekly = [];
+  let filteredCardAmountsWeekly = [];
 
-  cardWeekly.filter(
+  (filterPeriod === "weekly" ? cardWeekly : cardMonthly).map(
     (item) =>
-      item.card_no === filterCard && filteredCardPeriodWeekly.push(item.period)
+      item.card_no === +filterCard &&
+      filteredCardPeriodWeekly.push(item.period) &&
+      filteredCardAmountsWeekly.push(Math.abs(item.amount))
   );
 
   console.log(filteredCardPeriodWeekly);
@@ -90,8 +93,10 @@ const CardChart = (props) => {
   const state = {
     series: [
       {
-        name: "Desktops",
-        data: [10, 41, 35, 51, 49, 62, 69, 91, 148],
+        name: `${
+          filterPeriod === "weekly" ? "Haftalık" : "Aylık"
+        } kart hareketleri`,
+        data: filteredCardAmountsWeekly,
       },
     ],
     options: {
@@ -109,7 +114,9 @@ const CardChart = (props) => {
         curve: "straight",
       },
       title: {
-        text: "Kart Bazında Harcama Grafiği",
+        text: `Kart Bazında ${
+          filterPeriod === "weekly" ? "Haftalık" : "Aylık"
+        } Hareketler`,
         align: "left",
       },
       grid: {
@@ -119,17 +126,14 @@ const CardChart = (props) => {
         },
       },
       xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-        ],
+        categories: filteredCardPeriodWeekly,
+      },
+      tooltip: {
+        y: {
+          formatter: function (val) {
+            return val.toLocaleString("tr-TR") + " TL";
+          },
+        },
       },
     },
   };
@@ -139,7 +143,7 @@ const CardChart = (props) => {
       <div className={classes.selects}>
         <select name="card" id="" onChange={filterPeriodHandler}>
           <option value="weekly">Haftalık</option>
-          <option value="monthly">Aylık</option>
+          <option value="monthly">Son 6 Aylık</option>
         </select>
         <select name="card" id="" onChange={filterCardHandler}>
           <option value="all">Kart seçiniz</option>
@@ -148,15 +152,17 @@ const CardChart = (props) => {
           })}
         </select>
       </div>
-      <div className={classes.lineChart}>
-        <ReactApexChart
-          options={state.options}
-          series={state.series}
-          type="line"
-          height={500}
-          width={1200}
-        />
-      </div>
+      {filterCard.length > 0 && (
+        <div className={classes.lineChart}>
+          <ReactApexChart
+            options={state.options}
+            series={state.series}
+            type="line"
+            height={500}
+            width={1200}
+          />
+        </div>
+      )}
     </div>
   );
 };

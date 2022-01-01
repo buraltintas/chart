@@ -1,20 +1,99 @@
 import classes from "./AccChart.module.css";
 import ReactApexChart from "react-apexcharts";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const AccChart = (props) => {
   const [category, setCategory] = useState("daily");
   const [barCategory, setBarCategory] = useState("7days");
+  const [assetDaily, setAssetDaily] = useState([]);
+  const [assetMonthly, setAssetMonthly] = useState([]);
+  const [accRaw, setAccRaw] = useState([]);
+  const [categoryDaily, setAccountDaily] = useState([]);
+  const [categoryMonthly, setAccountMonthly] = useState([]);
   const categoryRef = useRef("");
   const barCategoryRef = useRef("");
 
+  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+
+  const year = new Date().getFullYear();
+  const month = `0${new Date().getMonth() + 1}`.slice(-2);
+  const day = `0${new Date().getDate()}`.slice(-2);
+  const today = `${year}${month}${day}`;
+
+  const monthlyPeriod = `${year}${month}`;
+
+  const days = 7;
+  const date = new Date();
+  const last = new Date(date.getTime() - days * 24 * 60 * 60 * 1000);
+  const dayForAsset = `0${last.getDate()}`.slice(-2);
+  const monthForAsset = `0${last.getMonth() + 1}`.slice(-2);
+  const yearForAsset = last.getFullYear();
+  const startDate = `${yearForAsset}${monthForAsset}${dayForAsset}`;
+
+  const lastMonth = new Date(date.getTime() - 6 * 30 * 24 * 60 * 60 * 1000);
+  const monthForAssetMonth = `0${lastMonth.getMonth() + 1}`.slice(-2);
+  const yearForAssetMonth = lastMonth.getFullYear();
+
+  const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
+
   const customerNumber = props.customerNumber;
 
-  const categoryDaily = props.accountDaily;
-  const categoryMonthly = props.accountMonthly;
-  const assetDaily = props.assetDaily;
-  const assetMonthly = props.assetMonthly;
-  const accRaw = props.accRaw;
+  useEffect(() => {
+    async function fetchAccountDaily(customerNumber, today) {
+      const response = await fetch(
+        `${baseURL}/customer/account/daily/${customerNumber}/${today}`
+      );
+
+      const data = await response.json();
+
+      setAccountDaily(data);
+    }
+    async function fetchAccountMonthly(customerNumber, monthlyPeriod) {
+      const response = await fetch(
+        `${baseURL}/customer/account/monthly/${customerNumber}/${monthlyPeriod}`
+      );
+
+      const data = await response.json();
+
+      setAccountMonthly(data);
+    }
+    async function fetchAssetDaily(customerNumber, today) {
+      const response = await fetch(
+        `${baseURL}/customer/asset/daily/${customerNumber}/${startDate}/${today}`
+      );
+
+      const data = await response.json();
+
+      setAssetDaily(data);
+    }
+    async function fetchAssetMonthly(
+      customerNumber,
+      startDateMonth,
+      monthlyPeriod
+    ) {
+      const response = await fetch(
+        `${baseURL}/customer/asset/monthly/${customerNumber}/${startDateMonth}/${monthlyPeriod}`
+      );
+
+      const data = await response.json();
+
+      setAssetMonthly(data);
+    }
+    async function fetchAccRaw(customerNumber, today) {
+      const response = await fetch(
+        `${baseURL}/transaction/account/${customerNumber}/20210101000000/${today}235959`
+      );
+
+      const data = await response.json();
+
+      setAccRaw(data);
+    }
+    fetchAccountDaily(customerNumber, today);
+    fetchAccountMonthly(customerNumber, monthlyPeriod);
+    fetchAssetDaily(customerNumber, today);
+    fetchAssetMonthly(customerNumber, startDateMonth, monthlyPeriod);
+    fetchAccRaw(customerNumber, today);
+  }, []);
 
   let period = "";
 
@@ -165,15 +244,15 @@ const AccChart = (props) => {
     assetPeriod = assetMonthlyPeriod;
   }
 
-  let pieCategoryMonthly = [];
+  let pieCategory = [];
 
-  categoryMonthly.map((item) => {
-    pieCategoryMonthly.push(item.trx_desc);
+  (category === "daily" ? categoryDaily : categoryMonthly).map((item) => {
+    pieCategory.push(item.trx_desc);
   });
 
-  let pieAmountsMonthly = [];
-  categoryMonthly.map((item) => {
-    pieAmountsMonthly.push(Math.abs(item.amount));
+  let pieAmounts = [];
+  (category === "daily" ? categoryDaily : categoryMonthly).map((item) => {
+    pieAmounts.push(Math.abs(item.amount));
   });
 
   const sortedRawData = accRaw
@@ -282,7 +361,7 @@ const AccChart = (props) => {
       tooltip: {
         y: {
           formatter: function (val) {
-            return val + " TL";
+            return val.toLocaleString("tr-TR") + " TL";
           },
         },
       },
@@ -290,7 +369,7 @@ const AccChart = (props) => {
   };
 
   const state = {
-    series: pieAmountsMonthly,
+    series: pieAmounts,
 
     options: {
       colors: [
@@ -316,7 +395,7 @@ const AccChart = (props) => {
       chart: {
         type: "donut",
       },
-      labels: pieCategoryMonthly,
+      labels: pieCategory,
       responsive: [
         {
           breakpoint: 480,
@@ -363,39 +442,38 @@ const AccChart = (props) => {
             width={700}
           />
         </div>
-        {positiveCategoryDaily.length > 0 && (
-          <div className={classes.totalExpense}>
-            <div className={classes.selectPeriod}>
-              <div onSubmit={categoryHandler} className={classes.form}>
-                <select
-                  name="period"
-                  id="period"
-                  ref={categoryRef}
-                  onChange={categoryHandler}
-                >
-                  <option value="daily">Günlük hareketler</option>
-                  <option value="monthly">Aylık hareketler</option>
-                </select>
-              </div>
-            </div>
-            <h4 className={classes.allCardsText}>
-              Tüm hesaplar için {period} gelen ve giden tutarlar
-            </h4>
 
-            <ReactApexChart
-              className={classes.gradientChart}
-              options={gradient.options}
-              series={[sumPositive, sumNegative]}
-              type="donut"
-              height={400}
-            />
+        <div className={classes.totalExpense}>
+          <div className={classes.selectPeriod}>
+            <div onSubmit={categoryHandler} className={classes.form}>
+              <select
+                name="period"
+                id="period"
+                ref={categoryRef}
+                onChange={categoryHandler}
+              >
+                <option value="daily">Günlük hareketler</option>
+                <option value="monthly">Aylık hareketler</option>
+              </select>
+            </div>
           </div>
-        )}
+          <h4 className={classes.allCardsText}>
+            Tüm hesaplar için {period} gelen ve giden tutarlar
+          </h4>
+
+          <ReactApexChart
+            className={classes.gradientChart}
+            options={gradient.options}
+            series={[sumPositive, sumNegative]}
+            type="donut"
+            height={400}
+          />
+        </div>
       </div>
       <div className={classes.flex2}>
         <div className={classes.pieChart}>
           <h4 className={classes.allCardsText2}>
-            Tüm hesaplar için aylık hareket kategorileri
+            Tüm hesaplar için {period} hareket kategorileri
           </h4>
           <ReactApexChart
             options={state.options}

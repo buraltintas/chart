@@ -18,11 +18,11 @@ function App() {
   const [cardMonthly, setCardMonthly] = useState([]);
   const [categoryDaily, setCategoryDaily] = useState([]);
   const [categoryMonthly, setCategoryMonthly] = useState([]);
-  const [accountDaily, setAccountDaily] = useState([]);
-  const [accountMonthly, setAccountMonthly] = useState([]);
-  const [assetDaily, setAssetDaily] = useState([]);
-  const [assetMonthly, setAssetMonthly] = useState([]);
-  const [accRaw, setAccRaw] = useState([]);
+  // const [accountDaily, setAccountDaily] = useState([]);
+  // const [accountMonthly, setAccountMonthly] = useState([]);
+  // const [assetDaily, setAssetDaily] = useState([]);
+  // const [assetMonthly, setAssetMonthly] = useState([]);
+  // const [accRaw, setAccRaw] = useState([]);
   const [load, setLoad] = useState(false);
   const [first, setFirst] = useState(false);
   const [second, setSecond] = useState(false);
@@ -155,113 +155,22 @@ function App() {
 
       setCategoryMonthly(data);
     }
-    async function fetchAccountDaily(customerNumber, today) {
-      const response = await fetch(
-        `${baseURL}/customer/account/daily/${customerNumber}/${today}`
-      );
-
-      if (response.ok) {
-        setSixth(true);
-      }
-      const data = await response.json();
-
-      setAccountDaily(data);
-    }
-    async function fetchAccountMonthly(customerNumber, monthlyPeriod) {
-      const response = await fetch(
-        `${baseURL}/customer/account/monthly/${customerNumber}/${monthlyPeriod}`
-      );
-
-      if (response.ok) {
-        setSeventh(true);
-      }
-      const data = await response.json();
-
-      setAccountMonthly(data);
-    }
-    async function fetchAssetDaily(customerNumber, today) {
-      const response = await fetch(
-        `${baseURL}/customer/asset/daily/${customerNumber}/${startDate}/${today}`
-      );
-
-      if (response.ok) {
-        setEighth(true);
-      }
-      const data = await response.json();
-
-      setAssetDaily(data);
-    }
-    async function fetchAssetMonthly(
-      customerNumber,
-      startDateMonth,
-      monthlyPeriod
-    ) {
-      const response = await fetch(
-        `${baseURL}/customer/asset/monthly/${customerNumber}/${startDateMonth}/${monthlyPeriod}`
-      );
-
-      if (response.ok) {
-        setNineth(true);
-      }
-      const data = await response.json();
-
-      setAssetMonthly(data);
-    }
-    async function fetchAccRaw(customerNumber, today) {
-      const response = await fetch(
-        `${baseURL}/transaction/account/${customerNumber}/20210101000000/${today}000000`
-      );
-
-      if (response.ok) {
-        setTenth(true);
-      }
-      const data = await response.json();
-
-      setAccRaw(data);
-    }
 
     fetchCategoryMonthly(customerNumber, monthlyPeriod);
     fetchCategoryDaily(customerNumber, today);
     fetchCardMonthly(customerNumber, monthlyPeriod);
     fetchCardRawData(customerNumber, today);
     fetchCardDaily(customerNumber, today);
-    fetchAccountDaily(customerNumber, today);
-    fetchAccountMonthly(customerNumber, monthlyPeriod);
-    fetchAssetDaily(customerNumber, today);
-    fetchAssetMonthly(customerNumber, startDateMonth, monthlyPeriod);
-    fetchAccRaw(customerNumber, today);
 
     setLoad(true);
   };
 
   useEffect(() => {
-    if (
-      first &&
-      second &&
-      third &&
-      forth &&
-      fifth &&
-      sixth &&
-      seventh &&
-      eighth &&
-      nineth &&
-      tenth === true
-    ) {
+    if (first && second && third && forth && fifth === true) {
       setShowData(true);
       setLoad(false);
     }
-  }, [
-    first,
-    second,
-    third,
-    forth,
-    fifth,
-    sixth,
-    seventh,
-    eighth,
-    nineth,
-    tenth,
-  ]);
+  }, [first, second, third, forth, fifth]);
 
   const customerNumberHandler = (e) => {
     setCustomerNumber(e.target.value);
@@ -309,6 +218,9 @@ function App() {
         )}
       </nav>
       <div className={classes.form}>
+        <h3 className={classes.customerDetailText}>
+          Müşteri Detayı Görüntüleme
+        </h3>
         <form
           onSubmit={customerNumberButtonHandler}
           className={classes.customerNumberInput}
@@ -419,14 +331,7 @@ function App() {
       )}
       {showData && (
         <div ref={accChart}>
-          <AccChart
-            customerNumber={customerNumber}
-            accountDaily={accountDaily}
-            accountMonthly={accountMonthly}
-            assetDaily={assetDaily}
-            assetMonthly={assetMonthly}
-            accRaw={accRaw}
-          />
+          <AccChart customerNumber={customerNumber} />
         </div>
       )}
     </div>
