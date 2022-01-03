@@ -125,7 +125,7 @@ const CardChart = (props) => {
       tooltip: {
         y: {
           formatter: function (val) {
-            return val.toLocaleString("tr-TR") + " TL";
+            return val.toLocaleString("tr-TR") + " ₺";
           },
         },
       },

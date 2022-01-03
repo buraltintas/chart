@@ -6,6 +6,9 @@ const MainPage = () => {
   const [categoryGeneral, setCategoryGeneral] = useState([]);
   const [accountGeneral, setAccountGeneral] = useState([]);
   const [showMain, setShowMain] = useState(false);
+  const [accountKPIGeneral, setAccountKPIGeneral] = useState([]);
+  const [categoryKPIGeneral, setCategoryKPIGeneral] = useState([]);
+  const [totalCountKPI, setTotalCountKPI] = useState({});
 
   const baseURL = "http://f98f-46-1-227-44.ngrok.io";
 
@@ -15,10 +18,8 @@ const MainPage = () => {
   const today = `${year}${month}${day}`;
 
   function fetchCategoryGeneral(today) {
-    fetch(`${baseURL}/categoryGeneral/daily/20211006`)
+    fetch(`${baseURL}/categoryGeneral/daily/${today}`)
       .then((response) => {
-        console.log(response);
-
         return response.json();
       })
       .then((data) => {
@@ -27,7 +28,7 @@ const MainPage = () => {
   }
 
   function fetchAccountGeneral(today) {
-    fetch(`${baseURL}/accountGeneral/daily/20211006`)
+    fetch(`${baseURL}/accountGeneral/daily/${today}`)
       .then((response) => {
         if (response.ok) {
           setShowMain(true);
@@ -39,12 +40,48 @@ const MainPage = () => {
       });
   }
 
+  function fetchAccountKPIGeneral(today) {
+    fetch(`${baseURL}/accountGeneral/kpi/${today}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setAccountKPIGeneral(data);
+      });
+  }
+
+  function fetchCategoryKPIGeneral(today) {
+    fetch(`${baseURL}/categoryGeneral/kpi/${today}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setCategoryKPIGeneral(data);
+      });
+  }
+
+  function fetchTotalCountKPI(today) {
+    fetch(`${baseURL}/totalCount/kpi/${today}`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setTotalCountKPI(data);
+      });
+  }
+
   useEffect(() => {
+    fetchAccountKPIGeneral(today);
+    fetchCategoryKPIGeneral(today);
     fetchCategoryGeneral(today);
     fetchAccountGeneral(today);
+    fetchTotalCountKPI(today);
     const interval = setInterval(() => {
+      fetchAccountKPIGeneral(today);
+      fetchCategoryKPIGeneral(today);
       fetchCategoryGeneral(today);
       fetchAccountGeneral(today);
+      fetchTotalCountKPI(today);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -73,8 +110,24 @@ const MainPage = () => {
     accountGeneralName.push(item.trx_desc);
   });
 
+  let gelenHavaleAmount, gidenHavaleAmount, gelenEftAmount, gidenEftAmount;
+
+  let gelenEFTTRX, gidenEFTTRX;
+
+  accountGeneral.map((item) => {
+    if (item.trx_desc === "Gelen Havale") gelenHavaleAmount = item.amount;
+    if (item.trx_desc === "Giden Havale") gidenHavaleAmount = item.amount;
+    if (item.trx_desc === "Gelen EFT") gelenEftAmount = item.amount;
+    if (item.trx_desc === "Giden EFT") gidenEftAmount = item.amount;
+    if (item.trx_desc === "Gelen EFT") gelenEFTTRX = item.trx_count;
+    if (item.trx_desc === "Giden EFT") gidenEFTTRX = item.trx_count;
+  });
+
   const stateCategoryGeneral = {
     series: categoryGeneralAmounts,
+    dataLabels: {
+      enabled: true,
+    },
     options: {
       colors: [
         "#9775fa",
@@ -86,6 +139,10 @@ const MainPage = () => {
         "#12b886",
         "#15aabf",
         "#228be6",
+        "#1971c2",
+        "#f08c00",
+        "#66a80f",
+        "#2f9e44",
       ],
       chart: {
         width: 380,
@@ -100,7 +157,7 @@ const MainPage = () => {
               width: 200,
             },
             legend: {
-              position: "bottom",
+              position: "right",
             },
           },
         },
@@ -137,7 +194,7 @@ const MainPage = () => {
               width: 200,
             },
             legend: {
-              position: "bottom",
+              position: "right",
             },
           },
         },
@@ -146,35 +203,85 @@ const MainPage = () => {
   };
 
   return (
-    <div className={classes.mainPageContainer}>
-      {showMain && (
-        <div className={classes.flex}>
-          <h1 className={classes.text}>
-            Toplam Kategori Bazında Kart Hareketleri
-          </h1>
-          <ReactApexChart
-            options={stateCategoryGeneral.options}
-            series={stateCategoryGeneral.series}
-            type="pie"
-            width={700}
-            height={500}
-          />
+    <div>
+      {accountKPIGeneral.income_amount && accountKPIGeneral.income_amount && (
+        <div className={classes.kpiContainer}>
+          <div className={classes.kpi}>
+            <h5>Toplam İşlem Sayısı</h5>
+            <h6>{totalCountKPI.total_trx_count}</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Gelen EFT İşlem Sayısı</h5>
+            <h6>{gelenEFTTRX}</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Gelen EFT Toplamı</h5>
+            <h6>{gelenEftAmount.toLocaleString("tr-TR")} ₺</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Giden EFT İşlem Sayısı</h5>
+            <h6>{gidenEFTTRX}</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Giden EFT Toplamı</h5>
+            <h6>{Math.abs(gidenEftAmount.toLocaleString("tr-TR"))} ₺</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Kart Toplam İşlem Sayısı</h5>
+            <h6>{totalCountKPI.card_trx_count}</h6>
+          </div>
+          <div className={classes.kpi}>
+            <h5>Kart Toplam Harcama</h5>
+            <h6>
+              {Math.abs(categoryKPIGeneral.outcome_amount).toLocaleString(
+                "tr-TR"
+              )}{" "}
+              ₺
+            </h6>
+          </div>
+
+          <div className={classes.kpi}>
+            <h5>Kart Toplam İptal/İade</h5>
+            <h6>
+              {Math.abs(categoryKPIGeneral.income_amount).toLocaleString(
+                "tr-TR"
+              )}{" "}
+              ₺
+            </h6>
+          </div>
         </div>
       )}
-      {showMain && (
-        <div className={classes.flex}>
-          <h1 className={classes.text}>
-            Toplam Kategori Bazında Hesap Hareketleri
-          </h1>
-          <ReactApexChart
-            options={stateAccountGeneral.options}
-            series={stateAccountGeneral.series}
-            type="pie"
-            width={700}
-            height={500}
-          />
-        </div>
-      )}
+
+      <div className={classes.mainPageContainer}>
+        {showMain && categoryGeneral && (
+          <div className={classes.flex}>
+            <h1 className={classes.text}>
+              Toplam Kategori Bazında Kart Hareketleri
+            </h1>
+            <ReactApexChart
+              options={stateCategoryGeneral.options}
+              series={stateCategoryGeneral.series}
+              type="pie"
+              width={700}
+              height={500}
+            />
+          </div>
+        )}
+        {showMain && accountGeneral && (
+          <div className={classes.flex}>
+            <h1 className={classes.text}>
+              Toplam Kategori Bazında Hesap Hareketleri
+            </h1>
+            <ReactApexChart
+              options={stateAccountGeneral.options}
+              series={stateAccountGeneral.series}
+              type="pie"
+              width={700}
+              height={500}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

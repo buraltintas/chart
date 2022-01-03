@@ -390,7 +390,7 @@ const NewChart = (props) => {
         </div>
         <div className={classes.totalExpenseText}>
           <h3>Toplam {period} harcama</h3>
-          <h2>{`${sumAmounts.toLocaleString("tr-TR")} TL`}</h2>
+          <h2>{`${sumAmounts.toLocaleString("tr-TR")} ₺`}</h2>
         </div>
 
         {cardNumbersDaily[0][0] && showClickedCardChart && (
@@ -503,12 +503,12 @@ const NewChart = (props) => {
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
                             return (
-                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
+                              <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>
                             );
                           }
                           if (filterCard === "all" || "") {
                             return (
-                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
+                              <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>
                             );
                           }
                         })}

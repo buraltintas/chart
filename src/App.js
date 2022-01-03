@@ -107,8 +107,6 @@ function App() {
       );
       const data3 = await response3.json();
 
-      console.log(response2, response3);
-
       if (response2.ok && response3.ok) {
         setShowData(true);
         setLoad(false);

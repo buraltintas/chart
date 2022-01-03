@@ -341,7 +341,7 @@ const AccChart = (props) => {
       },
       yaxis: {
         title: {
-          text: "TL",
+          text: "₺",
         },
       },
       fill: {
@@ -353,7 +353,7 @@ const AccChart = (props) => {
       tooltip: {
         y: {
           formatter: function (val) {
-            return val.toLocaleString("tr-TR") + " TL";
+            return val.toLocaleString("tr-TR") + " ₺";
           },
         },
       },
@@ -497,7 +497,7 @@ const AccChart = (props) => {
                 <td>
                   <tr>
                     {sortedRawData.map((card) => {
-                      return <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>;
+                      return <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>;
                     })}
                   </tr>
                 </td>

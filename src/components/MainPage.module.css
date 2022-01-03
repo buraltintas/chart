@@ -1,19 +1,59 @@
 .mainPageContainer {
   width: 100%;
   display: flex;
-
   justify-content: center;
   gap: 6rem;
 }
 
+.kpiContainer {
+  margin: 0 auto;
+  width: 90%;
+  height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.kpi {
+  background-image: linear-gradient(256deg, rgb(30, 149, 214), #006cb7);
+  padding: 0.5rem;
+  width: 24rem;
+  height: 10rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 2px 8px 6px 2px #bbb;
+  transition: all 300ms;
+}
+
+.kpi:hover {
+  transform: scale(1.15);
+  box-shadow: none;
+}
+
+.kpi h6 {
+  font-size: 2.3rem;
+  color: #fff;
+  padding-top: 1rem;
+}
+
+.kpi h5 {
+  width: 100%;
+  font-size: 1.4rem;
+  border-bottom: 1px dashed #ccc;
+  padding-bottom: 1rem;
+  color: #fff;
+}
+
 .flex {
   margin-top: 4rem;
-  padding: 1rem;
+  padding: 2rem;
   height: 51rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-
   border: 1px solid #ccc;
   border-radius: 1rem;
 }
