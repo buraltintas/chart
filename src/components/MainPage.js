@@ -216,7 +216,9 @@ const MainPage = () => {
           </div>
           <div className={classes.kpi}>
             <h5>Gelen EFT Toplamı</h5>
-            <h6>{gelenEftAmount.toLocaleString("tr-TR")} ₺</h6>
+            {gelenEftAmount && (
+              <h6>{gelenEftAmount.toLocaleString("tr-TR")} ₺</h6>
+            )}
           </div>
           <div className={classes.kpi}>
             <h5>Giden EFT İşlem Sayısı</h5>
@@ -224,7 +226,9 @@ const MainPage = () => {
           </div>
           <div className={classes.kpi}>
             <h5>Giden EFT Toplamı</h5>
-            <h6>{Math.abs(gidenEftAmount.toLocaleString("tr-TR"))} ₺</h6>
+            {gidenEftAmount && (
+              <h6>{Math.abs(gidenEftAmount.toLocaleString("tr-TR"))} ₺</h6>
+            )}
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam İşlem Sayısı</h5>
@@ -232,28 +236,32 @@ const MainPage = () => {
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam Harcama</h5>
-            <h6>
-              {Math.abs(categoryKPIGeneral.outcome_amount).toLocaleString(
-                "tr-TR"
-              )}{" "}
-              ₺
-            </h6>
+            {categoryKPIGeneral.outcome_amount && (
+              <h6>
+                {Math.abs(
+                  categoryKPIGeneral.outcome_amount.toLocaleString("tr-TR")
+                )}{" "}
+                ₺
+              </h6>
+            )}
           </div>
 
           <div className={classes.kpi}>
             <h5>Kart Toplam İptal/İade</h5>
-            <h6>
-              {Math.abs(categoryKPIGeneral.income_amount).toLocaleString(
-                "tr-TR"
-              )}{" "}
-              ₺
-            </h6>
+            {categoryKPIGeneral.income_amount && (
+              <h6>
+                {Math.abs(
+                  categoryKPIGeneral.income_amount.toLocaleString("tr-TR")
+                )}{" "}
+                ₺
+              </h6>
+            )}
           </div>
         </div>
       )}
 
       <div className={classes.mainPageContainer}>
-        {showMain && categoryGeneral.length && (
+        {showMain && (
           <div className={classes.flex}>
             <h1 className={classes.text}>
               Toplam Kategori Bazında Kart Hareketleri
@@ -267,7 +275,7 @@ const MainPage = () => {
             />
           </div>
         )}
-        {showMain && accountGeneral.length && (
+        {showMain && (
           <div className={classes.flex}>
             <h1 className={classes.text}>
               Toplam Kategori Bazında Hesap Hareketleri
