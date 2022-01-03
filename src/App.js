@@ -6,6 +6,7 @@ import CardChart from "./components/CardChart";
 import AccChart from "./components/AccChart";
 import logo from "../src/fibabanka-logo.png";
 import LoadingSpinner from "./components/LoadingSpinner";
+import MainPage from "./components/MainPage";
 
 function App() {
   const [showCardActive, setShowCardActive] = useState(false);
@@ -18,22 +19,9 @@ function App() {
   const [cardMonthly, setCardMonthly] = useState([]);
   const [categoryDaily, setCategoryDaily] = useState([]);
   const [categoryMonthly, setCategoryMonthly] = useState([]);
-  // const [accountDaily, setAccountDaily] = useState([]);
-  // const [accountMonthly, setAccountMonthly] = useState([]);
-  // const [assetDaily, setAssetDaily] = useState([]);
-  // const [assetMonthly, setAssetMonthly] = useState([]);
-  // const [accRaw, setAccRaw] = useState([]);
+
   const [load, setLoad] = useState(false);
-  const [first, setFirst] = useState(false);
-  const [second, setSecond] = useState(false);
-  const [third, setThird] = useState(false);
-  const [forth, setForth] = useState(false);
-  const [fifth, setFifth] = useState(false);
-  const [sixth, setSixth] = useState(false);
-  const [seventh, setSeventh] = useState(false);
-  const [eighth, setEighth] = useState(false);
-  const [nineth, setNineth] = useState(false);
-  const [tenth, setTenth] = useState(false);
+
   const totalCardChart = useRef();
   const cardChart = useRef();
   const accChart = useRef();
@@ -96,81 +84,55 @@ function App() {
     if (!customerNumber) return;
 
     async function fetchCardDaily(customerNumber, today) {
-      const response = await fetch(
+      const response1 = await fetch(
         `${baseURL}/customer/card/daily/${customerNumber}/${today}/${today}`
       );
 
-      if (response.ok) {
-        setFirst(true);
-      }
-      const data = await response.json();
+      const data1 = await response1.json();
 
-      setCardDaily(data);
-    }
-    async function fetchCardRawData(customerNumber, today) {
-      const response = await fetch(
+      setCardDaily(data1);
+
+      const response2 = await fetch(
         `${baseURL}/transaction/credit/${customerNumber}/20210101000000/${today}235959`
       );
 
-      if (response.ok) {
-        setSecond(true);
-      }
-      const data = await response.json();
+      const data2 = await response2.json();
 
-      setCardRawData(data);
+      setCardRawData(data2);
+      const response3 = await fetch(
+        `${baseURL}/customer/category/daily/${customerNumber}/${today}`
+      );
+      const data3 = await response3.json();
+
+      console.log(response2, response3);
+
+      if (response2.ok && response3.ok) {
+        setShowData(true);
+        setLoad(false);
+      }
+
+      setCategoryDaily(data3);
     }
     async function fetchCardMonthly(customerNumber, monthlyPeriod) {
-      const response = await fetch(
+      const response1 = await fetch(
         `${baseURL}/customer/card/monthly/${customerNumber}/${monthlyPeriod}/${monthlyPeriod}`
       );
 
-      if (response.ok) {
-        setThird(true);
-      }
-      const data = await response.json();
+      const data1 = await response1.json();
 
-      setCardMonthly(data);
-    }
-    async function fetchCategoryDaily(customerNumber, today) {
-      const response = await fetch(
-        `${baseURL}/customer/category/daily/${customerNumber}/${today}`
-      );
-
-      if (response.ok) {
-        setForth(true);
-      }
-      const data = await response.json();
-
-      setCategoryDaily(data);
-    }
-    async function fetchCategoryMonthly(customerNumber, monthlyPeriod) {
-      const response = await fetch(
+      setCardMonthly(data1);
+      const response2 = await fetch(
         `${baseURL}/customer/category/monthly/${customerNumber}/${monthlyPeriod}`
       );
+      const data2 = await response2.json();
 
-      if (response.ok) {
-        setFifth(true);
-      }
-      const data = await response.json();
-
-      setCategoryMonthly(data);
+      setCategoryMonthly(data2);
     }
-
-    fetchCategoryMonthly(customerNumber, monthlyPeriod);
-    fetchCategoryDaily(customerNumber, today);
-    fetchCardMonthly(customerNumber, monthlyPeriod);
-    fetchCardRawData(customerNumber, today);
     fetchCardDaily(customerNumber, today);
+    fetchCardMonthly(customerNumber, monthlyPeriod);
 
     setLoad(true);
   };
-
-  useEffect(() => {
-    if (first && second && third && forth && fifth === true) {
-      setShowData(true);
-      setLoad(false);
-    }
-  }, [first, second, third, forth, fifth]);
 
   const customerNumberHandler = (e) => {
     setCustomerNumber(e.target.value);
@@ -190,6 +152,9 @@ function App() {
           <img src={logo} alt="logo of fibabanka" className={classes.logo} />
           <div className={classes.pfmText}>
             <h1>PFM</h1>
+            {!showData && !load && (
+              <h2 className={classes.instantText}>/ Güniçi Anlık</h2>
+            )}
           </div>
         </div>
         {showData && (
@@ -302,6 +267,8 @@ function App() {
           )}
         </form>
       </div>
+
+      {!showData && !load && <MainPage />}
 
       {load && (
         <div className={classes.loading}>

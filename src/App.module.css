@@ -112,3 +112,8 @@
   align-items: center;
   justify-content: center;
 }
+
+.instantText {
+  color: #fff;
+  margin-left: 0.4rem;
+}

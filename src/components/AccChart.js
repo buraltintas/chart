@@ -13,8 +13,6 @@ const AccChart = (props) => {
   const categoryRef = useRef("");
   const barCategoryRef = useRef("");
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
-
   const year = new Date().getFullYear();
   const month = `0${new Date().getMonth() + 1}`.slice(-2);
   const day = `0${new Date().getDate()}`.slice(-2);
@@ -37,6 +35,8 @@ const AccChart = (props) => {
   const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
 
   const customerNumber = props.customerNumber;
+
+  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
 
   useEffect(() => {
     async function fetchAccountDaily(customerNumber, today) {
@@ -93,7 +93,7 @@ const AccChart = (props) => {
     fetchAssetDaily(customerNumber, today);
     fetchAssetMonthly(customerNumber, startDateMonth, monthlyPeriod);
     fetchAccRaw(customerNumber, today);
-  }, []);
+  }, [customerNumber, monthlyPeriod, startDate, startDateMonth, today]);
 
   let period = "";
 
@@ -264,11 +264,6 @@ const AccChart = (props) => {
     options: {
       colors: ["#17b417", "#b41111"],
       chart: {
-        // events: {
-        //   dataPointSelection: function (event, chartContext, config) {
-        //     setShowIncome(true);
-        //   },
-        // },
         width: 380,
         type: "donut",
       },
@@ -290,9 +285,6 @@ const AccChart = (props) => {
       },
       legend: {
         show: false,
-        formatter: function (val, opts) {
-          return;
-        },
       },
 
       responsive: [

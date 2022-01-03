@@ -7,11 +7,11 @@ const CardChart = (props) => {
   const cardNumberMonthly = props.cardMonthly;
   let initialCardNumber = [];
 
-  cardNumberMonthly.map((item) => initialCardNumber.push(item.card_no));
+  if (cardNumberMonthly) {
+    cardNumberMonthly.map((item) => initialCardNumber.push(item.card_no));
+  }
 
-  console.log(initialCardNumber);
-
-  const [filterCard, setFilterCard] = useState(+initialCardNumber[0]);
+  const [filterCard, setFilterCard] = useState(`${initialCardNumber[0]}`);
   const [filterPeriod, setFilterPeriod] = useState("weekly");
   const [cardWeekly, setCardWeekly] = useState([]);
   const [cardMonthly, setCardMonthly] = useState([]);
@@ -72,7 +72,7 @@ const CardChart = (props) => {
     }
     fetchCardMonthly(customerNumber, startDateMonth, monthlyPeriod);
     fetchCardDaily(customerNumber, startDate, today);
-  }, []);
+  }, [customerNumber, monthlyPeriod, startDate, startDateMonth, today]);
 
   let filteredCardPeriodWeekly = [];
   let filteredCardAmountsWeekly = [];
@@ -89,7 +89,7 @@ const CardChart = (props) => {
       {
         name: `${
           filterPeriod === "weekly" ? "Haftalık" : "Aylık"
-        } kart hareketleri`,
+        } kart harcamaları`,
         data: filteredCardAmountsWeekly,
       },
     ],
@@ -110,7 +110,7 @@ const CardChart = (props) => {
       title: {
         text: `${filterCard} nolu Kart Bazında ${
           filterPeriod === "weekly" ? "Haftalık" : "Son 6 Aylık"
-        } Hareketler`,
+        } Harcamalar`,
         align: "left",
       },
       grid: {
@@ -137,15 +137,13 @@ const CardChart = (props) => {
       <div className={classes.selects}>
         <select name="card" id="" onChange={filterPeriodHandler}>
           <option value="weekly" id="weekly">
-            Haftalık
+            Son 1 Haftalık
           </option>
-
           <option value="monthly" id="monthly">
             Son 6 Aylık
           </option>
         </select>
         <select name="card" id="" onChange={filterCardHandler}>
-          {/* <option value="">Kart seçiniz</option> */}
           {cardNumberMonthly.map((item) => {
             return <option value={item.card_no}>{item.card_no}</option>;
           })}
