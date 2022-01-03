@@ -253,7 +253,7 @@ const MainPage = () => {
       )}
 
       <div className={classes.mainPageContainer}>
-        {showMain && categoryGeneral && (
+        {showMain && categoryGeneral.length && (
           <div className={classes.flex}>
             <h1 className={classes.text}>
               Toplam Kategori Bazında Kart Hareketleri
@@ -267,7 +267,7 @@ const MainPage = () => {
             />
           </div>
         )}
-        {showMain && accountGeneral && (
+        {showMain && accountGeneral.length && (
           <div className={classes.flex}>
             <h1 className={classes.text}>
               Toplam Kategori Bazında Hesap Hareketleri
