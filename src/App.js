@@ -150,7 +150,12 @@ function App() {
     <div className="App">
       <nav className={classes.header}>
         <div className={classes.headerLogo}>
-          <img src={logo} alt="logo of fibabanka" className={classes.logo} />
+          <img
+            src={logo}
+            alt="logo of fibabanka"
+            className={classes.logo}
+            onClick={clearHandler}
+          />
           <div className={classes.pfmText}>
             <h1>PFM</h1>
             {!showData && !load && (

@@ -19,8 +19,12 @@
   margin-left: 3rem;
   display: flex;
   align-items: center;
-  /* justify-content: center; */
+
   gap: 2rem;
+}
+
+.headerLogo img {
+  cursor: pointer;
 }
 
 .headerLogo img {

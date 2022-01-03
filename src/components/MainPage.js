@@ -202,6 +202,8 @@ const MainPage = () => {
     },
   };
 
+  console.log(categoryKPIGeneral);
+
   return (
     <div>
       {accountKPIGeneral.income_amount && accountKPIGeneral.income_amount && (
