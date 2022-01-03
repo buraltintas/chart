@@ -202,15 +202,13 @@ const MainPage = () => {
     },
   };
 
-  console.log(categoryKPIGeneral);
-
   return (
     <div>
       {accountKPIGeneral.income_amount && accountKPIGeneral.income_amount && (
         <div className={classes.kpiContainer}>
           <div className={classes.kpi}>
             <h5>Toplam İşlem Sayısı</h5>
-            <h6>{totalCountKPI.total_trx_count}</h6>
+            <h6>{totalCountKPI.total_trx_count.toLocaleString("tr-TR")}</h6>
           </div>
           <div className={classes.kpi}>
             <h5>Gelen EFT İşlem Sayısı</h5>
@@ -229,7 +227,7 @@ const MainPage = () => {
           <div className={classes.kpi}>
             <h5>Giden EFT Toplamı</h5>
             {gidenEftAmount && (
-              <h6>{Math.abs(gidenEftAmount.toLocaleString("tr-TR"))} ₺</h6>
+              <h6>{gidenEftAmount.toLocaleString("tr-TR")} ₺</h6>
             )}
           </div>
           <div className={classes.kpi}>
@@ -242,18 +240,6 @@ const MainPage = () => {
               <h6>
                 {Math.abs(
                   categoryKPIGeneral.outcome_amount.toLocaleString("tr-TR")
-                )}{" "}
-                ₺
-              </h6>
-            )}
-          </div>
-
-          <div className={classes.kpi}>
-            <h5>Kart Toplam İptal/İade</h5>
-            {categoryKPIGeneral.income_amount && (
-              <h6>
-                {Math.abs(
-                  categoryKPIGeneral.income_amount.toLocaleString("tr-TR")
                 )}{" "}
                 ₺
               </h6>
@@ -272,7 +258,7 @@ const MainPage = () => {
               options={stateCategoryGeneral.options}
               series={stateCategoryGeneral.series}
               type="pie"
-              width={700}
+              width={735}
               height={500}
             />
           </div>
