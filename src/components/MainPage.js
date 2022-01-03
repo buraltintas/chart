@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { useState } from "react/cjs/react.development";
 import classes from "./MainPage.module.css";
 
 const MainPage = () => {
@@ -10,28 +9,45 @@ const MainPage = () => {
 
   const baseURL = "http://f98f-46-1-227-44.ngrok.io";
 
-  useEffect(() => {}, []);
+  const year = new Date().getFullYear();
+  const month = `0${new Date().getMonth() + 1}`.slice(-2);
+  const day = `0${new Date().getDate()}`.slice(-2);
+  const today = `${year}${month}${day}`;
 
-  async function fetchGeneral() {
-    const response1 = await fetch(`${baseURL}/categoryGeneral/daily/20211006`);
-    const response2 = await fetch(`${baseURL}/accountGeneral/daily/20211006`);
+  function fetchCategoryGeneral(today) {
+    fetch(`${baseURL}/categoryGeneral/daily/20211006`)
+      .then((response) => {
+        console.log(response);
 
-    console.log(response1, response2);
-
-    if (response1.ok && response2.ok) {
-      setShowMain(true);
-    }
-
-    const dataCategoryGeneral = await response1.json();
-    const dataAccountGeneral = await response2.json();
-
-    setCategoryGeneral(dataCategoryGeneral);
-    setAccountGeneral(dataAccountGeneral);
+        return response.json();
+      })
+      .then((data) => {
+        setCategoryGeneral(data);
+      });
   }
 
-  setInterval(() => {
-    fetchGeneral();
-  }, 7000);
+  function fetchAccountGeneral(today) {
+    fetch(`${baseURL}/accountGeneral/daily/20211006`)
+      .then((response) => {
+        if (response.ok) {
+          setShowMain(true);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setAccountGeneral(data);
+      });
+  }
+
+  useEffect(() => {
+    fetchCategoryGeneral(today);
+    fetchAccountGeneral(today);
+    const interval = setInterval(() => {
+      fetchCategoryGeneral(today);
+      fetchAccountGeneral(today);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   let categoryGeneralAmounts = [];
 

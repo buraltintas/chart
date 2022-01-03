@@ -19,6 +19,7 @@ function App() {
   const [cardMonthly, setCardMonthly] = useState([]);
   const [categoryDaily, setCategoryDaily] = useState([]);
   const [categoryMonthly, setCategoryMonthly] = useState([]);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const [load, setLoad] = useState(false);
 
@@ -81,6 +82,8 @@ function App() {
 
   const customerNumberButtonHandler = (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
+
     if (!customerNumber) return;
 
     async function fetchCardDaily(customerNumber, today) {
@@ -268,7 +271,11 @@ function App() {
         </form>
       </div>
 
-      {!showData && !load && <MainPage />}
+      {!showData && !load && !formSubmitted ? (
+        <MainPage />
+      ) : (
+        <React.Fragment></React.Fragment>
+      )}
 
       {load && (
         <div className={classes.loading}>
