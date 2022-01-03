@@ -208,7 +208,9 @@ const MainPage = () => {
         <div className={classes.kpiContainer}>
           <div className={classes.kpi}>
             <h5>Toplam İşlem Sayısı</h5>
-            <h6>{totalCountKPI.total_trx_count.toLocaleString("tr-TR")}</h6>
+            {totalCountKPI.total_trx_count && (
+              <h6>{totalCountKPI.total_trx_count.toLocaleString("tr-TR")}</h6>
+            )}
           </div>
           <div className={classes.kpi}>
             <h5>Gelen EFT İşlem Sayısı</h5>
