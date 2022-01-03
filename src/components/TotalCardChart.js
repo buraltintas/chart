@@ -490,7 +490,7 @@ const NewChart = (props) => {
                       <tr>
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
-                            return <tr key={card.timestamp}>{card.card_no}</tr>;
+                            return <tr>{card.card_no}</tr>;
                           }
                           if (filterCard === "all" || "") {
                             return <tr>{card.card_no}</tr>;
@@ -503,16 +503,12 @@ const NewChart = (props) => {
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
                             return (
-                              <tr key={card.timestamp}>
-                                {card.amount.toLocaleString("tr-TR")} TL
-                              </tr>
+                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
                             );
                           }
                           if (filterCard === "all" || "") {
                             return (
-                              <tr key={card.timestamp}>
-                                {card.amount.toLocaleString("tr-TR")} TL
-                              </tr>
+                              <tr>{card.amount.toLocaleString("tr-TR")} TL</tr>
                             );
                           }
                         })}
@@ -522,14 +518,10 @@ const NewChart = (props) => {
                       <tr>
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
-                            return (
-                              <tr key={card.timestamp}>{card.category}</tr>
-                            );
+                            return <tr>{card.category}</tr>;
                           }
                           if (filterCard === "all" || "") {
-                            return (
-                              <tr key={card.timestamp}>{card.category}</tr>
-                            );
+                            return <tr>{card.category}</tr>;
                           }
                         })}
                       </tr>
@@ -538,14 +530,10 @@ const NewChart = (props) => {
                       <tr>
                         {sortedCardRawData.map((card) => {
                           if (card.card_no === filterCard) {
-                            return (
-                              <tr key={card.timestamp}>{card.trx_desc}</tr>
-                            );
+                            return <tr>{card.trx_desc}</tr>;
                           }
                           if (filterCard === "all" || "") {
-                            return (
-                              <tr key={card.timestamp}>{card.trx_desc}</tr>
-                            );
+                            return <tr>{card.trx_desc}</tr>;
                           }
                         })}
                       </tr>
@@ -580,9 +568,7 @@ const NewChart = (props) => {
                               .slice(0, 4)
                               .join("");
                             return (
-                              <tr
-                                key={card.timestamp}
-                              >{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                              <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
                             );
                           }
                           if (filterCard === "all" || "") {
@@ -612,9 +598,7 @@ const NewChart = (props) => {
                               .slice(0, 4)
                               .join("");
                             return (
-                              <tr
-                                key={card.timestamp}
-                              >{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                              <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
                             );
                           }
                         })}
