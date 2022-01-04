@@ -56,14 +56,17 @@ const NewChart = (props) => {
 
   let clickedAmounts = [];
 
-  if (clickedCardNumber) {
+  if (clickedCardNumber && category === "monthly") {
     clickedAmounts.push(
-      period === "aylık"
-        ? cardMonthly
-        : cardDaily.filter(
-            (item) =>
-              item.card_no === clickedCardNumber && Math.abs(item.amount)
-          )
+      cardMonthly.filter(
+        (item) => item.card_no === +clickedCardNumber && Math.abs(item.amount)
+      )
+    );
+  } else if (clickedCardNumber && category === "daily") {
+    clickedAmounts.push(
+      cardDaily.filter(
+        (item) => item.card_no === +clickedCardNumber && Math.abs(item.amount)
+      )
     );
   }
 

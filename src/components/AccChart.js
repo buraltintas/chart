@@ -444,8 +444,8 @@ const AccChart = (props) => {
                 ref={categoryRef}
                 onChange={categoryHandler}
               >
-                <option value="daily">Günlük hareketler</option>
-                <option value="monthly">Aylık hareketler</option>
+                <option value="daily">Günlük toplam</option>
+                <option value="monthly">Aylık toplam</option>
               </select>
             </div>
           </div>
