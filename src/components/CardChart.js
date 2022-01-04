@@ -77,12 +77,25 @@ const CardChart = (props) => {
   let filteredCardPeriodWeekly = [];
   let filteredCardAmountsWeekly = [];
 
-  (filterPeriod === "weekly" ? cardWeekly : cardMonthly).map(
-    (item) =>
-      item.card_no === +filterCard &&
-      filteredCardPeriodWeekly.push(item.period) &&
-      filteredCardAmountsWeekly.push(Math.abs(item.amount))
-  );
+  (filterPeriod === "weekly" ? cardWeekly : cardMonthly).map((item) => {
+    console.log(item.period);
+    const day = item.period.toString().split("").slice(6, 8).join("");
+    const month = item.period.toString().split("").slice(4, 6).join("");
+    const year = item.period.toString().split("").slice(0, 4).join("");
+    item.card_no === +filterCard &&
+      filteredCardPeriodWeekly.push(
+        filterPeriod !== "weekly"
+          ? item.period.toString().split("").slice(4, 6).join("") +
+              "/" +
+              item.period.toString().split("").slice(0, 4).join("")
+          : item.period.toString().split("").slice(6, 8).join("") +
+              "/" +
+              item.period.toString().split("").slice(4, 6).join("") +
+              "/" +
+              item.period.toString().split("").slice(0, 4).join("")
+      ) &&
+      filteredCardAmountsWeekly.push(Math.abs(item.amount));
+  });
 
   const state = {
     series: [

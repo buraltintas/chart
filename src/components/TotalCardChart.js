@@ -36,6 +36,8 @@ const NewChart = (props) => {
   };
 
   const closeClickedCardChart = () => {
+    setFilterCard("all");
+    setClickedCardNumber("");
     setShowClickedCardChart(false);
   };
 
@@ -48,10 +50,24 @@ const NewChart = (props) => {
     cardDaily.map((item) => customerNumber.length > 0 && item.card_no)
   );
 
+  const cardMonthly = props.cardMonthly;
+
   let amountsDaily = [];
-  amountsDaily.push(
-    cardDaily.map((item) => customerNumber.length > 0 && Math.abs(item.amount))
-  );
+
+  let clickedAmounts = [];
+
+  if (clickedCardNumber) {
+    clickedAmounts.push(
+      period === "aylık"
+        ? cardMonthly
+        : cardDaily.filter(
+            (item) =>
+              item.card_no === clickedCardNumber && Math.abs(item.amount)
+          )
+    );
+  }
+
+  amountsDaily.push(cardDaily.map((item) => Math.abs(item.amount)));
 
   let sumAmountsDaily = 0;
 
@@ -63,20 +79,12 @@ const NewChart = (props) => {
     Math.round((item * 100) / sumAmountsDaily)
   );
 
-  const cardMonthly = props.cardMonthly;
-
   let cardNumbersMonthly = [];
 
-  cardNumbersMonthly.push(
-    cardMonthly.map((item) => customerNumber.length > 0 && item.card_no)
-  );
+  cardNumbersMonthly.push(cardMonthly.map((item) => item.card_no));
 
   let amountsMonthly = [];
-  amountsMonthly.push(
-    cardMonthly.map(
-      (item) => customerNumber.length > 0 && Math.abs(item.amount)
-    )
-  );
+  amountsMonthly.push(cardMonthly.map((item) => Math.abs(item.amount)));
 
   let sumAmountsMonthly = 0;
 
@@ -91,26 +99,18 @@ const NewChart = (props) => {
   const categoryDaily = props.categoryDaily;
 
   let categoryAmountsDaily = [];
-  categoryAmountsDaily.push(
-    categoryDaily.map(
-      (item) => customerNumber.length > 0 && Math.abs(item.amount)
-    )
-  );
+  categoryAmountsDaily.push(categoryDaily.map((item) => Math.abs(item.amount)));
 
   let categoryNameDaily = [];
 
-  categoryNameDaily.push(
-    categoryDaily.map((item) => customerNumber.length > 0 && item.category)
-  );
+  categoryNameDaily.push(categoryDaily.map((item) => item.category));
 
   const categoryMonthly = props.categoryMonthly;
 
   let categoryAmountsMonthly = [];
 
   categoryAmountsMonthly.push(
-    categoryMonthly.map(
-      (item) => customerNumber.length > 0 && Math.abs(item.amount)
-    )
+    categoryMonthly.map((item) => Math.abs(item.amount))
   );
 
   let categoryNameMonthly = [];
@@ -148,13 +148,22 @@ const NewChart = (props) => {
       item.card_no
   );
 
+  let sortedCardRawData;
+
   if (filterCard === "all") {
+    sortedCardRawData = cardRawData
+      .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+      .reverse()
+      .slice(0, 35);
   }
 
-  const sortedCardRawData = cardRawData
-    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
-    .reverse()
-    .slice(0, 30);
+  if (filterCard !== "all") {
+    sortedCardRawData = cardRawData
+      .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+      .reverse()
+      .filter((item) => item.card_no === filterCard.toString())
+      .slice(0, 35);
+  }
 
   const cardExpense = {
     series: categoryAmounts[0],
@@ -207,6 +216,10 @@ const NewChart = (props) => {
             // console.log(config.w.config.labels[config.dataPointIndex]);
 
             setClickedCardNumber(config.w.config.labels[config.dataPointIndex]);
+
+            setFilterCard(
+              config.w.config.labels[config.dataPointIndex].toString()
+            );
 
             setShowClickedCardChart(true);
           },
@@ -361,6 +374,8 @@ const NewChart = (props) => {
     },
   };
 
+  console.log(filterCard.toString());
+
   return (
     <div className={classes.container}>
       <div className={classes.left}>
@@ -384,13 +399,23 @@ const NewChart = (props) => {
               options={gradient.options}
               series={percentageAmounts}
               type="donut"
-              height={300}
+              height={350}
+              width={600}
             />
           </div>
         </div>
         <div className={classes.totalExpenseText}>
-          <h3>Toplam {period} harcama</h3>
-          <h2>{`${sumAmounts.toLocaleString("tr-TR")} ₺`}</h2>
+          <h3>
+            {clickedCardNumber
+              ? `${clickedCardNumber} nolu kart`
+              : "Tüm kartlar"}{" "}
+            {period} harcama
+          </h3>
+          <h2>{`${
+            clickedCardNumber
+              ? Math.abs(clickedAmounts[0][0].amount).toLocaleString("tr-TR")
+              : sumAmounts.toLocaleString("tr-TR")
+          } ₺`}</h2>
         </div>
 
         {cardNumbersDaily[0][0] && showClickedCardChart && (
@@ -468,13 +493,16 @@ const NewChart = (props) => {
       <div className={classes.container}>
         {cardNumbers[0] && (
           <div className={classes.select}>
-            <h3>Son kart hareketlerini görmek için: </h3>
-            <select name="card" id="" onChange={filterCardHandler}>
+            <h3 className={classes.headerTable}>
+              {filterCard === "all" ? "Tüm kartlar" : filterCard + " nolu kart"}{" "}
+              son 35 hareket
+            </h3>
+            {/* <select name="card" id="" onChange={filterCardHandler}>
               <option value="all">Tüm kartlar</option>
               {cardNumbersFilter.map((item) => {
                 return <option value={item}>{item}</option>;
               })}
-            </select>
+            </select> */}
             {filterCard && (
               <div className={classes.transactionTable}>
                 <table className={classes.transactionTables}>
@@ -489,7 +517,7 @@ const NewChart = (props) => {
                     <td>
                       <tr>
                         {sortedCardRawData.map((card) => {
-                          if (card.card_no === filterCard) {
+                          if (card.card_no === filterCard.toString()) {
                             return <tr>{card.card_no}</tr>;
                           }
                           if (filterCard === "all" || "") {
@@ -501,7 +529,7 @@ const NewChart = (props) => {
                     <td>
                       <tr>
                         {sortedCardRawData.map((card) => {
-                          if (card.card_no === filterCard) {
+                          if (card.card_no === filterCard.toString()) {
                             return (
                               <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>
                             );
@@ -517,7 +545,7 @@ const NewChart = (props) => {
                     <td>
                       <tr>
                         {sortedCardRawData.map((card) => {
-                          if (card.card_no === filterCard) {
+                          if (card.card_no === filterCard.toString()) {
                             return <tr>{card.category}</tr>;
                           }
                           if (filterCard === "all" || "") {
@@ -529,7 +557,7 @@ const NewChart = (props) => {
                     <td>
                       <tr>
                         {sortedCardRawData.map((card) => {
-                          if (card.card_no === filterCard) {
+                          if (card.card_no === filterCard.toString()) {
                             return <tr>{card.trx_desc}</tr>;
                           }
                           if (filterCard === "all" || "") {
@@ -541,7 +569,7 @@ const NewChart = (props) => {
                     <td>
                       <tr>
                         {sortedCardRawData.map((card) => {
-                          if (card.card_no === filterCard) {
+                          if (card.card_no === filterCard.toString()) {
                             const minute = card.timestamp
                               .toString()
                               .split("")

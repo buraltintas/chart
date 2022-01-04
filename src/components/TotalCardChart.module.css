@@ -70,6 +70,12 @@ h5 {
   margin-top: 2rem;
 }
 
+.headerTable {
+  font-size: 2rem;
+  margin-top: -2rem;
+  margin-bottom: -1rem;
+}
+
 .cardExpenseContainer {
   margin: 0 auto;
   width: 100%;
@@ -125,6 +131,7 @@ h5 {
   justify-content: center;
   width: 100%;
   margin: 0 auto;
+  margin-top: -5rem;
 }
 
 select {
@@ -209,7 +216,7 @@ button:hover {
   margin: 0 auto;
   font-size: 1.5rem;
   width: 100%;
-  margin-top: 1rem;
+
   margin-bottom: 1rem;
   display: flex;
   align-items: center;

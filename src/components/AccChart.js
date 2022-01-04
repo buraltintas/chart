@@ -430,7 +430,7 @@ const AccChart = (props) => {
             options={bar.options}
             series={bar.series}
             type="bar"
-            height={400}
+            height={300}
             width={700}
           />
         </div>
