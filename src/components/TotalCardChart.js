@@ -209,7 +209,7 @@ const NewChart = (props) => {
     },
   };
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+  const baseURL = props.baseURL;
 
   const gradient = {
     options: {

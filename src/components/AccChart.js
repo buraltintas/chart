@@ -36,7 +36,7 @@ const AccChart = (props) => {
 
   const customerNumber = props.customerNumber;
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+  const baseURL = props.baseURL;
 
   useEffect(() => {
     async function fetchAccountDaily(customerNumber, today) {
@@ -393,6 +393,8 @@ const AccChart = (props) => {
       ],
     },
   };
+
+  console.log(assetMonthly);
 
   return (
     <div className={classes.container}>

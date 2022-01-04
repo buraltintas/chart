@@ -78,7 +78,7 @@ function App() {
     setTotalCardActive(false);
   };
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+  const baseURL = "http://8358-46-1-129-139.ngrok.io";
 
   const customerNumberButtonHandler = (e) => {
     e.preventDefault();
@@ -275,7 +275,7 @@ function App() {
       </div>
 
       {!showData && !load && !formSubmitted ? (
-        <MainPage />
+        <MainPage baseURL={baseURL} />
       ) : (
         <React.Fragment></React.Fragment>
       )}
@@ -295,6 +295,7 @@ function App() {
             cardMonthly={cardMonthly}
             categoryDaily={categoryDaily}
             categoryMonthly={categoryMonthly}
+            baseURL={baseURL}
           />
         </div>
       )}
@@ -303,12 +304,13 @@ function App() {
           <CardChart
             customerNumber={customerNumber}
             cardMonthly={cardMonthly}
+            baseURL={baseURL}
           />
         </div>
       )}
       {showData && (
         <div ref={accChart}>
-          <AccChart customerNumber={customerNumber} />
+          <AccChart customerNumber={customerNumber} baseURL={baseURL} />
         </div>
       )}
     </div>

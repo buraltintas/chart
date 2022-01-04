@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import classes from "./MainPage.module.css";
 
-const MainPage = () => {
+const MainPage = (props) => {
   const [categoryGeneral, setCategoryGeneral] = useState([]);
   const [accountGeneral, setAccountGeneral] = useState([]);
   const [showMain, setShowMain] = useState(false);
@@ -10,7 +10,7 @@ const MainPage = () => {
   const [categoryKPIGeneral, setCategoryKPIGeneral] = useState([]);
   const [totalCountKPI, setTotalCountKPI] = useState({});
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+  const baseURL = props.baseURL;
 
   const year = new Date().getFullYear();
   const month = `0${new Date().getMonth() + 1}`.slice(-2);

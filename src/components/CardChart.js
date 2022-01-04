@@ -45,7 +45,7 @@ const CardChart = (props) => {
 
   const startDateMonth = `${yearForAssetMonth}${monthForAssetMonth}`;
 
-  const baseURL = "http://f98f-46-1-227-44.ngrok.io";
+  const baseURL = props.baseURL;
 
   useEffect(() => {
     async function fetchCardDaily(customerNumber, startDate, today) {
