@@ -262,7 +262,7 @@ const AccChart = (props) => {
 
   const gradient = {
     options: {
-      colors: ["#17b417", "#b41111"],
+      colors: ["#6fee6f", "#df6161"],
       chart: {
         width: 380,
         type: "donut",
@@ -284,22 +284,12 @@ const AccChart = (props) => {
         opacity: [0.75, 1],
       },
       legend: {
-        show: false,
+        show: true,
+        markers: {
+          fillColors: ["#6fee6f", "#df6161"],
+        },
       },
 
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              position: "bottom",
-            },
-          },
-        },
-      ],
       labels: ["Gelen Tutarlar", "Giden Tutarlar"],
     },
   };
@@ -454,11 +444,10 @@ const AccChart = (props) => {
           </h4>
 
           <ReactApexChart
-            className={classes.gradientChart}
             options={gradient.options}
             series={[sumPositive, sumNegative]}
             type="donut"
-            height={400}
+            width={500}
           />
         </div>
       </div>

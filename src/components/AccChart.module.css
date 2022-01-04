@@ -1,9 +1,7 @@
 .container {
   width: 100%;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 5rem;
-  padding-top: 4rem;
-  min-height: 80rem;
+  padding-top: 8rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,37 +10,34 @@
 .flex {
   display: flex;
   align-items: center;
-  gap: 6rem;
+  height: 36rem;
+  gap: 4rem;
+  color: #6fee6f;
+  margin-bottom: 1rem;
 }
 
 .barChart {
-  width: 60rem;
-
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-direction: column;
-  padding-right: 8rem;
+  padding-right: 4rem;
+  border-right: 1px dashed #ccc;
 }
 
 .totalExpense {
   margin: 0 auto;
-  /* margin-top: 1rem; */
-  width: 60rem;
   display: flex;
   flex-direction: column;
   text-align: center;
-  border-left: 1px dashed #ccc;
 }
 
-.selectPeriod {
+/* .selectPeriod {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   margin: 0 auto;
-  margin-top: 3rem;
-}
+} */
 
 .allCardsText {
   font-size: 1.5rem;
@@ -58,19 +53,15 @@
 }
 
 .accTransactions {
-  /* margin-top: 2rem; */
-
-  width: 90rem;
   display: flex;
   flex-direction: column;
 }
 
 .transactionTable {
   margin: 0 auto;
-  font-size: 1.5rem;
   width: 100%;
   margin-top: 0.7rem;
-  margin-bottom: 5rem;
+  margin-bottom: 8rem;
   display: flex;
   align-items: center;
 }
@@ -78,8 +69,8 @@
 .transactionTables {
   width: 70rem;
   border: 1px solid #ccc;
-  padding: 1rem;
-  font-size: 1.5rem;
+
+  font-size: 1.3rem;
 }
 
 .transactionTables tr {
@@ -93,6 +84,7 @@
 
 .flex2 {
   margin-top: 0.5rem;
+
   border-top: 1px dashed #ccc;
   display: flex;
   align-items: center;
@@ -101,7 +93,7 @@
 
 .pieChart {
   margin-top: -3rem;
-  height: 50rem;
-  width: 70rem;
+  height: 45rem;
+
   border-right: 1px dashed #ccc;
 }
