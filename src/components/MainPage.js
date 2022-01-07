@@ -123,6 +123,8 @@ const MainPage = (props) => {
     if (item.trx_desc === "Giden EFT") gidenEFTTRX = item.trx_count;
   });
 
+  console.log(categoryKPIGeneral);
+
   const stateCategoryGeneral = {
     series: categoryGeneralAmounts,
     dataLabels: {
@@ -234,16 +236,13 @@ const MainPage = (props) => {
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam İşlem Sayısı</h5>
-            <h6>{totalCountKPI.card_trx_count}</h6>
+            <h6>{totalCountKPI.card_trx_count.toLocaleString("tr-TR")}</h6>
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam Harcama</h5>
             {categoryKPIGeneral.outcome_amount && (
               <h6>
-                {Math.abs(
-                  categoryKPIGeneral.outcome_amount.toLocaleString("tr-TR")
-                )}{" "}
-                ₺
+                {categoryKPIGeneral.outcome_amount.toLocaleString("tr-TR")} ₺
               </h6>
             )}
           </div>

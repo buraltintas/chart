@@ -78,7 +78,7 @@ function App() {
     setTotalCardActive(false);
   };
 
-  const baseURL = "http://8358-46-1-129-139.ngrok.io";
+  const baseURL = "http://bc04-46-1-227-153.ngrok.io";
 
   const customerNumberButtonHandler = (e) => {
     e.preventDefault();
