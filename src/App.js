@@ -20,9 +20,7 @@ function App() {
   const [categoryDaily, setCategoryDaily] = useState([]);
   const [categoryMonthly, setCategoryMonthly] = useState([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
-
   const [load, setLoad] = useState(false);
-
   const totalCardChart = useRef();
   const cardChart = useRef();
   const accChart = useRef();
@@ -78,7 +76,7 @@ function App() {
     setTotalCardActive(false);
   };
 
-  const baseURL = "http://bc04-46-1-227-153.ngrok.io";
+  const baseURL = "http://71d2-46-1-227-153.ngrok.io";
 
   const customerNumberButtonHandler = (e) => {
     e.preventDefault();
@@ -170,13 +168,13 @@ function App() {
                 onClick={showTotalCardHandler}
                 className={`${totalCardActive ? "active" : ""}`}
               >
-                Kart Toplam Harcamalar
+                Toplam Harcamalar
               </li>
               <li
                 onClick={showCardHandler}
                 className={showCardActive ? "active" : ""}
               >
-                Kart Bazında Harcamalar
+                Harcama Davranışı
               </li>
               <li
                 onClick={showAccHandler}

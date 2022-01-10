@@ -1,6 +1,6 @@
 import classes from "./AccChart.module.css";
 import ReactApexChart from "react-apexcharts";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const AccChart = (props) => {
   const [category, setCategory] = useState("daily");
@@ -258,7 +258,7 @@ const AccChart = (props) => {
   const sortedRawData = accRaw
     .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
     .reverse()
-    .slice(0, 20);
+    .slice(0, 35);
 
   const gradient = {
     options: {
@@ -397,149 +397,150 @@ const AccChart = (props) => {
   console.log(assetMonthly);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.flex}>
-        <div className={classes.barChart}>
-          <div className={classes.selectPeriod}>
-            <div onSubmit={categoryHandler}>
-              <select
-                name="barPeriod"
-                id="barPeriod"
-                ref={barCategoryRef}
-                onChange={barCategoryHandler}
-              >
-                <option value="7days">Son 7 günlük işlemler</option>
-                <option value="6months">
-                  Son {assetMonthlyPeriod.length} aylık işlemler
-                </option>
-              </select>
+    <React.Fragment>
+      <div className={classes.container}>
+        <div className={classes.flex}>
+          <div className={classes.totalExpense}>
+            <div className={classes.selectPeriod}>
+              <div onSubmit={categoryHandler} className={classes.form}>
+                <select
+                  name="period"
+                  id="period"
+                  ref={categoryRef}
+                  onChange={categoryHandler}
+                >
+                  <option value="daily">Günlük toplam</option>
+                  <option value="monthly">Aylık toplam</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <h4 className={classes.allCardsText}>
-            Tüm varlıklar için gelen ve giden tutarlar
-          </h4>
-          <ReactApexChart
-            options={bar.options}
-            series={bar.series}
-            type="bar"
-            height={300}
-            width={700}
-          />
-        </div>
+            <h4 className={classes.allCardsText}>
+              Tüm hesaplar için {period} gelen ve giden tutarlar
+            </h4>
 
-        <div className={classes.totalExpense}>
-          <div className={classes.selectPeriod}>
-            <div onSubmit={categoryHandler} className={classes.form}>
-              <select
-                name="period"
-                id="period"
-                ref={categoryRef}
-                onChange={categoryHandler}
-              >
-                <option value="daily">Günlük toplam</option>
-                <option value="monthly">Aylık toplam</option>
-              </select>
+            <ReactApexChart
+              options={gradient.options}
+              series={[sumPositive, sumNegative]}
+              type="donut"
+              width={500}
+            />
+          </div>
+          <div className={classes.pieChart}>
+            <h4 className={classes.allCardsText2}>
+              Tüm hesaplar için {period} hareket kategorileri
+            </h4>
+            <ReactApexChart
+              options={state.options}
+              series={state.series}
+              type="donut"
+              width={600}
+            />
+          </div>
+        </div>
+        <div className={classes.flex2}>
+          <div className={classes.accTransactions}>
+            <h4 className={classes.allCardsText}>Son 20 hesap hareketleri</h4>
+            <div className={classes.transactionTable}>
+              <table className={classes.transactionTables}>
+                <thead>
+                  <th>Hesap numarası</th>
+                  <th>İşlem tutarı</th>
+                  <th>İşlem açıklaması</th>
+                  <th>İşlem tarihi - saati</th>
+                </thead>
+                <tbody>
+                  <td>
+                    <tr>
+                      {sortedRawData.map((card) => {
+                        return (
+                          <tr className={classes.amounts}>{card.account_no}</tr>
+                        );
+                      })}
+                    </tr>
+                  </td>
+                  <td>
+                    <tr>
+                      {sortedRawData.map((card) => {
+                        return <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>;
+                      })}
+                    </tr>
+                  </td>
+
+                  <td>
+                    <tr>
+                      {sortedRawData.map((card) => {
+                        return <tr>{card.trx_desc}</tr>;
+                      })}
+                    </tr>
+                  </td>
+                  <td>
+                    <tr>
+                      {sortedRawData.map((card) => {
+                        const minute = card.timestamp
+                          .toString()
+                          .split("")
+                          .slice(10, 12)
+                          .join("");
+                        const hour = card.timestamp
+                          .toString()
+                          .split("")
+                          .slice(8, 10)
+                          .join("");
+                        const day = card.timestamp
+                          .toString()
+                          .split("")
+                          .slice(6, 8)
+                          .join("");
+                        const month = card.timestamp
+                          .toString()
+                          .split("")
+                          .slice(4, 6)
+                          .join("");
+                        const year = card.timestamp
+                          .toString()
+                          .split("")
+                          .slice(0, 4)
+                          .join("");
+                        return (
+                          <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
+                        );
+                      })}
+                    </tr>
+                  </td>
+                </tbody>
+              </table>
             </div>
-          </div>
-          <h4 className={classes.allCardsText}>
-            Tüm hesaplar için {period} gelen ve giden tutarlar
-          </h4>
-
-          <ReactApexChart
-            options={gradient.options}
-            series={[sumPositive, sumNegative]}
-            type="donut"
-            width={500}
-          />
-        </div>
-      </div>
-      <div className={classes.flex2}>
-        <div className={classes.pieChart}>
-          <h4 className={classes.allCardsText2}>
-            Tüm hesaplar için {period} hareket kategorileri
-          </h4>
-          <ReactApexChart
-            options={state.options}
-            series={state.series}
-            type="donut"
-            width={600}
-          />
-        </div>
-        <div className={classes.accTransactions}>
-          <h4 className={classes.allCardsText}>Son 20 hesap hareketleri</h4>
-          <div className={classes.transactionTable}>
-            <table className={classes.transactionTables}>
-              <thead>
-                <th>Hesap numarası</th>
-                <th>İşlem tutarı</th>
-                <th>İşlem açıklaması</th>
-                <th>İşlem tarihi - saati</th>
-              </thead>
-              <tbody>
-                <td>
-                  <tr>
-                    {sortedRawData.map((card) => {
-                      return (
-                        <tr className={classes.amounts}>{card.account_no}</tr>
-                      );
-                    })}
-                  </tr>
-                </td>
-                <td>
-                  <tr>
-                    {sortedRawData.map((card) => {
-                      return <tr>{card.amount.toLocaleString("tr-TR")} ₺</tr>;
-                    })}
-                  </tr>
-                </td>
-
-                <td>
-                  <tr>
-                    {sortedRawData.map((card) => {
-                      return <tr>{card.trx_desc}</tr>;
-                    })}
-                  </tr>
-                </td>
-                <td>
-                  <tr>
-                    {sortedRawData.map((card) => {
-                      const minute = card.timestamp
-                        .toString()
-                        .split("")
-                        .slice(10, 12)
-                        .join("");
-                      const hour = card.timestamp
-                        .toString()
-                        .split("")
-                        .slice(8, 10)
-                        .join("");
-                      const day = card.timestamp
-                        .toString()
-                        .split("")
-                        .slice(6, 8)
-                        .join("");
-                      const month = card.timestamp
-                        .toString()
-                        .split("")
-                        .slice(4, 6)
-                        .join("");
-                      const year = card.timestamp
-                        .toString()
-                        .split("")
-                        .slice(0, 4)
-                        .join("");
-                      return (
-                        <tr>{`${day}/${month}/${year} - ${hour}:${minute}`}</tr>
-                      );
-                    })}
-                  </tr>
-                </td>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
-    </div>
+      <div className={classes.barChart}>
+        <div className={classes.selectPeriod}>
+          <div onSubmit={categoryHandler}>
+            <select
+              name="barPeriod"
+              id="barPeriod"
+              ref={barCategoryRef}
+              onChange={barCategoryHandler}
+            >
+              <option value="7days">Son 7 günlük işlemler</option>
+              <option value="6months">
+                Son {assetMonthlyPeriod.length} aylık işlemler
+              </option>
+            </select>
+          </div>
+        </div>
+        <h4 className={classes.allCardsText}>
+          Tüm varlıklar için gelen ve giden tutarlar
+        </h4>
+        <ReactApexChart
+          options={bar.options}
+          series={bar.series}
+          type="bar"
+          height={500}
+          width={1200}
+        />
+      </div>
+    </React.Fragment>
   );
 };
 
