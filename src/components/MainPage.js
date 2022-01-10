@@ -216,7 +216,7 @@ const MainPage = (props) => {
           </div>
           <div className={classes.kpi}>
             <h5>Gelen EFT İşlem Sayısı</h5>
-            <h6>{gelenEFTTRX}</h6>
+            {gelenEFTTRX && <h6>{gelenEFTTRX}</h6>}
           </div>
           <div className={classes.kpi}>
             <h5>Gelen EFT Toplamı</h5>
@@ -226,7 +226,7 @@ const MainPage = (props) => {
           </div>
           <div className={classes.kpi}>
             <h5>Giden EFT İşlem Sayısı</h5>
-            <h6>{gidenEFTTRX}</h6>
+            {gidenEFTTRX && <h6>{gidenEFTTRX}</h6>}
           </div>
           <div className={classes.kpi}>
             <h5>Giden EFT Toplamı</h5>
