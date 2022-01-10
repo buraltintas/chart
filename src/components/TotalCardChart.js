@@ -408,12 +408,12 @@ const NewChart = (props) => {
           </div>
         </div>
         <div className={classes.totalExpenseText}>
-          <h3>
+          <h2>
             {clickedCardNumber
               ? `${clickedCardNumber} nolu kart`
               : "Tüm kartlar"}{" "}
             {period} harcama
-          </h3>
+          </h2>
           <h2>{`${
             clickedCardNumber
               ? Math.abs(clickedAmounts[0][0].amount).toLocaleString("tr-TR")

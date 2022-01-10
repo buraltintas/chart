@@ -60,15 +60,8 @@ input {
   padding: 0.5rem;
 }
 
-h5 {
-  text-align: center;
-  font-size: 2rem;
-  margin-top: 2rem;
-}
-
 .headerTable {
   font-size: 2rem;
-  margin-top: -2rem;
   margin-bottom: -1rem;
 }
 
@@ -216,7 +209,7 @@ button:hover {
   width: 90rem;
   border: 1px solid #ccc;
   padding: 1rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .transactionTables tr {
