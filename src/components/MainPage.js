@@ -236,7 +236,9 @@ const MainPage = (props) => {
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam İşlem Sayısı</h5>
-            <h6>{totalCountKPI.card_trx_count.toLocaleString("tr-TR")}</h6>
+            {totalCountKPI.card_trx_count && (
+              <h6>{totalCountKPI.card_trx_count.toLocaleString("tr-TR")}</h6>
+            )}
           </div>
           <div className={classes.kpi}>
             <h5>Kart Toplam Harcama</h5>
